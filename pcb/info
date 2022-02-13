@@ -1,0 +1,155 @@
+{
+  "uuid": "058de4f6ceac84672119c7b951d46a8d",
+  "path": "Offline/PCB_sid_pm",
+  "name": "PCB_sid_pm",
+  "content": "",
+  "created_at": "2022-02-09 14:07:08",
+  "updated_at": "2022-02-11 09:44:02",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "1e74d8fbd2e41c3032275052cb318892",
+      "title": "Sheet_1",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "f29621326ae148e3809e5921ba1d3d3c": 2,
+        "798d0935b37a4951a84e1145693344c9": 1,
+        "3ec77201bbcd4ecd8722658d581a4e60": 3,
+        "2f5c8276f8d64010877a8d3bb97697b8": 1,
+        "eaa76950fd7343a1953943ee7b9978d3": 1,
+        "df3fc4bce12f4ccd8af4db52d8a6f3f3": 1
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "100uF",
+          1,
+          "CAP-TH_BD8.0-P3.50-D0.6-FD",
+          "C1",
+          {
+            "BOM_Supplier": "LCSC",
+            "BOM_Supplier Part": "C713160",
+            "BOM_Manufacturer": "PANASONIC(松下)",
+            "BOM_Manufacturer Part": "ECA1HHG101",
+            "BOM_JLCPCB Part Class": "Extended Part",
+            "puuid": "90d1b58a2d284d63b5d026a0c4e38bab",
+            "uuid": "df3fc4bce12f4ccd8af4db52d8a6f3f3"
+          }
+        ],
+        [
+          "HDR-F-2.54_1x6",
+          1,
+          "HDR-F-2.54_1X6",
+          "H_RASP",
+          {
+            "BOM_Supplier Part": "C40877",
+            "BOM_Supplier": "LCSC",
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "puuid": "e86d43893d914130bd34765c00ed5f63",
+            "uuid": "2f5c8276f8d64010877a8d3bb97697b8"
+          }
+        ],
+        [
+          "HDR-F-2.54_1x2",
+          3,
+          "HDR-F-2.54_1X2",
+          "IN_5V,IN_12V,OUT_LA",
+          {
+            "BOM_Supplier Part": "C49661",
+            "BOM_Supplier": "LCSC",
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "puuid": "36b1306a115341f4b4d9407fb34974e0",
+            "uuid": "3ec77201bbcd4ecd8722658d581a4e60"
+          }
+        ],
+        [
+          "HDR-F-2.54_1x4",
+          1,
+          "HDR-F-2.54_1X4",
+          "OUT_STEPPER",
+          {
+            "BOM_Supplier Part": "C225501",
+            "BOM_Supplier": "LCSC",
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "puuid": "21473b495b6340c992965357d5701779",
+            "uuid": "eaa76950fd7343a1953943ee7b9978d3"
+          }
+        ],
+        [
+          "HW-134_Stepper_Driver",
+          1,
+          "HW-134_STEPPER_DRIVER",
+          "U6",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "b7ca72bab77147939968f9d13153bb2b",
+            "uuid": "798d0935b37a4951a84e1145693344c9"
+          }
+        ],
+        [
+          "USB-TYPE A_Female",
+          2,
+          "USB-A-SMD_USB-M-32-F",
+          "USB1,USB2",
+          {
+            "BOM_Supplier Part": "C42605",
+            "BOM_Supplier": "LCSC",
+            "BOM_Manufacturer": "ValuePro",
+            "BOM_Manufacturer Part": "-",
+            "puuid": "6c37866fcd57439293bf5611bdf0b96d",
+            "uuid": "f29621326ae148e3809e5921ba1d3d3c"
+          }
+        ]
+      ],
+      "updateTime": 1644505210,
+      "createTime": 1644412029,
+      "histories": [],
+      "created_at": "2022-02-09 14:07:09",
+      "updated_at": "2022-02-10 16:00:10"
+    },
+    {
+      "uuid": "7c50d83783d23085aaaceaa98bd490bf",
+      "puuid": "058de4f6ceac84672119c7b951d46a8d",
+      "title": "PCB_PCB_sid_pm_2",
+      "filename": "PCB_PCB_sid_pm_2.json",
+      "description": "",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "90d1b58a2d284d63b5d026a0c4e38bab": 1,
+        "e86d43893d914130bd34765c00ed5f63": 1,
+        "36b1306a115341f4b4d9407fb34974e0": 3,
+        "21473b495b6340c992965357d5701779": 1,
+        "b7ca72bab77147939968f9d13153bb2b": 1,
+        "6c37866fcd57439293bf5611bdf0b96d": 2
+      },
+      "BOM": [],
+      "updateTime": 1644569042,
+      "createTime": 1644505529,
+      "histories": [],
+      "created_at": "2022-02-10 16:05:29",
+      "updated_at": "2022-02-11 09:44:02"
+    }
+  ],
+  "sort": [],
+  "title": "PCB_sid_pm",
+  "foldername": "PCB_sid_pm",
+  "schfilename": "PCB_sid_pm.json",
+  "schfilemtime": 1644505212000
+}
