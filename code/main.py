@@ -1,17 +1,17 @@
 from kivy.app import App
 from kivy.uix.screenmanager import *
 
-from HomePageScreen import HomePageScreen 
-from RunScreen import  RunScreen
-from SendScreen import SendScreen
-from StorageScreen import StorageScreen
-from SettingsScreen import SettingsScreen
+from screens.HomePageScreen import HomePageScreen 
+from screens.RunScreen import  RunScreen
+from screens.SendScreen import SendScreen
+from screens.StorageScreen import StorageScreen
+from screens.SettingsScreen import SettingsScreen   
 
 
 class MainApp(App):
     
     def build(self):
-        self.title = "SID 0.1"
+        self.title = "SID 0.2"
 
         # build the screen manager
         sm = ScreenManager(transition=FadeTransition())
