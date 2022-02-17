@@ -8,6 +8,8 @@ from kivy.uix.checkbox import CheckBox
 from kivy.uix.image import Image
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.popup import Popup
+from kivy.uix.progressbar import ProgressBar
+from kivy.clock import Clock
 
 class RunScreen(Screen):
     
@@ -16,6 +18,7 @@ class RunScreen(Screen):
 
         self.winSize = Window.size
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
+        self.isPaused = False
 
         # _____________the whole page_____________
         pageGrid = GridLayout(cols=1)
@@ -75,7 +78,7 @@ class RunScreen(Screen):
             btn.bind(on_press=self.callback)
             bottomGrid.add_widget(btn)  
         
-        # ____________________________
+        # ___________add widgets to the page_________________
         pageGrid.add_widget(paramGrid)
         pageGrid.add_widget(bottomGrid)
         self.add_widget(pageGrid)
@@ -103,20 +106,35 @@ class RunScreen(Screen):
         """
         Do: delete the elements to hide the camera
         """
-        
-        self.ids["paramGrid"].remove_widget(self.ids["calibImg"])
-        self.ids["anchor"].remove_widget(self.ids["captureButton"])
-        self.ids["paramGrid"].remove_widget(self.ids["anchor"])
+        try:
+            self.ids["paramGrid"].remove_widget(self.ids["calibImg"])
+            self.ids["anchor"].remove_widget(self.ids["captureButton"])
+            self.ids["paramGrid"].remove_widget(self.ids["anchor"])
+        except:
+            pass
     
     def showRunPopup(self):
         """
         Do: popup to show the progression of the scan
         & launches script that scans an object
         """
+        # schedule check
+        self.progress = Clock.schedule_interval(self.updateRun,1)
+
         # create content and add to the popup
         content = GridLayout(cols=1)
 
+        # capture 
         scanImg = Image(source='res/sid.jpg')
+
+        # progress bar
+        
+        pb = ProgressBar(value=0, max=100,size_hint_y=None, height=self.winSize[1]/15)
+        pbLabel = Label(text=f"progress = {pb.value}%",size_hint_y=None, height=self.winSize[1]/15)
+        self.ids["progressBar"] = pb
+        self.ids["pbLabel"] = pbLabel
+
+        # buttons
         buttons = GridLayout(cols=4,padding = (self.winSize[0]/50,self.winSize[1]/50), 
                             spacing=(self.winSize[0]/50,self.winSize[1]/50),
                             size_hint_y=None, height=self.winSize[1]/5)
@@ -127,7 +145,10 @@ class RunScreen(Screen):
             btn.bind(on_press=self.callback)
             buttons.add_widget(btn)  
 
+        # add widgets
         content.add_widget(scanImg)
+        content.add_widget(pbLabel)
+        content.add_widget(pb)
         content.add_widget(buttons)
 
         popup = Popup(title='Run 3D scan',content=content, auto_dismiss=False)
@@ -136,6 +157,13 @@ class RunScreen(Screen):
         # open the popup
         popup.open()
 
+    def updateRun(self, dt):
+        if self.ids["progressBar"].value == 100:
+            self.progress.cancel()
+        elif self.isPaused == False:
+            self.ids["progressBar"].value += 5
+            self.ids["pbLabel"].text = "progress = "+ str(self.ids["progressBar"].value) + "%"
+        
 
     def callback(self, instance):    
         """
@@ -158,12 +186,12 @@ class RunScreen(Screen):
             print("calibrating")
         elif name =="Close":
             self.ids[str("runPopup")].dismiss()
+            self.progress.cancel()
         elif name =="Cancel":
-            print("cancel")
-            self.ids[str("runPopup")].dismiss()
+            self.progress.cancel()
         elif name =="Pause":
-            print("pause")
+            self.isPaused = True
         elif name =="Resume":
-            print("resume")
+            self.isPaused = False
         else:
             print('The button %s is not in the list of recognized buttons' % (instance))

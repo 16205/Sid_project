@@ -11,7 +11,7 @@ from screens.SettingsScreen import SettingsScreen
 class MainApp(App):
     
     def build(self):
-        self.title = "SID 0.2"
+        self.title = "SID 0.3"
 
         # build the screen manager
         sm = ScreenManager(transition=FadeTransition())
