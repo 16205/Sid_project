@@ -3,11 +3,9 @@ from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.gridlayout import GridLayout
 from kivy.core.window import Window
-from kivy.uix.label import Label
-from kivy.uix.slider import Slider
-from kivy.uix.checkbox import CheckBox
 from kivy.uix.image import Image
 from kivy.uix.popup import Popup
+from kivy.uix.scrollview import ScrollView
 
 import os
 
@@ -17,18 +15,21 @@ class StorageScreen(Screen):
 
         self.winSize = Window.size
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
+        Window.bind(on_resize=self.on_window_resize)
 
         # _____________the whole page_____________
         pageGrid = GridLayout(cols=1)
 
         # folders of the scans
         scanGrid = GridLayout(cols=5, spacing=(self.winSize[0]/20,self.winSize[1]/20),
-                                padding = (self.winSize[0]/50,self.winSize[1]/50))
+                                padding = (self.winSize[0]/50,self.winSize[1]/50),size_hint_y = None)
+        scanGrid.bind(minimum_height=scanGrid.setter('height'))
+        self.ids["scanGrid"] = scanGrid
         
         self.scanFolders = [name for name in os.listdir('./scans') if os.path.isdir(os.path.join('./scans', name))]
         for i in range (len(self.scanFolders)):
             toggle = ToggleButton(text=self.scanFolders[i], font_size=24, background_normal="res/folder.png",
-                        background_down="res/folder_open.png",size_hint_y=None, height=self.winSize[1]/4)
+                        background_down="res/folder_open.png",size_hint = (None, None))
             name = f"folder_{self.scanFolders[i]}"
             self.ids[name] = toggle
             scanGrid.add_widget(toggle)  
@@ -45,17 +46,28 @@ class StorageScreen(Screen):
             btn.bind(on_press=self.callback)
             bottomGrid.add_widget(btn)  
 
+        # scroll view
+        root = ScrollView(size=scanGrid.size, do_scroll_y=True )
+
         # add widgets to the screen
-        pageGrid.add_widget(scanGrid)
+        root.add_widget(scanGrid)
+        pageGrid.add_widget(root)      
         pageGrid.add_widget(bottomGrid)
         self.add_widget(pageGrid)
+
+    def on_window_resize(self, window, width, height):
+        # adjusts folders height and width
+        for elem in self.ids["scanGrid"].children:
+            elem.height = height /3
+            elem.width = width /4
+
     
     def openScanPopup(self,scanName):
         # create content and add to the popup
         content = GridLayout(cols=1)
 
         # images 
-        scanImg = Image(source='res/sid.jpg')
+        scanImg = Image(source='scans/'+scanName+'/sid.jpg')
 
         # buttons
         buttons = GridLayout(cols=4,padding = (self.winSize[0]/50,self.winSize[1]/50), 
@@ -77,24 +89,38 @@ class StorageScreen(Screen):
 
         # open the popup
         popup.open()
+    
+    def doWithFolders(self, methodToRun, doBreak= True):
+        for scan in self.scanFolders:
+                name = f"folder_{scan}"
+                if self.ids[name].state == "down":
+                    methodToRun(scan)
+                    if doBreak:
+                        break
 
+    def sendFolders(self,folders):
+        self.manager.current = "Send"
+        #TODO: modify
+
+    def deleteFolders(self,folders):
+        print("deleting")
+        #TODO: faire ce truc
     def callback(self, instance):        
         name = instance.text
 
         if name == "Back":
             self.manager.current = "Home"
         elif name == "Delete":
-            print('Delete selected elements')
+            self.doWithFolders(self.deleteFolders,False)
         elif name == "Convert":
             print('Convert to .obj 3D or printable 3D file')
         elif name == "Send":
-            self.manager.current = "Send"
+            # TODO: gérer cette couille
+            pass
+            # self.doWithFolders(self.sendFolders)
+            # self.manager.current = "Send"
         elif name == "Open":
-            for scan in self.scanFolders:
-                name = f"folder_{scan}"
-                if self.ids[name].state == "down":
-                    self.openScanPopup(scan)
-                    break
+            self.doWithFolders(self.openScanPopup)
         elif name =="Close":
             self.ids[str("runPopup")].dismiss()
         else:

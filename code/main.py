@@ -17,7 +17,7 @@ class MainApp(App):
         sm = ScreenManager(transition=FadeTransition())
 
         sm.add_widget(HomePageScreen(name='Home'))
-        sm.add_widget(SettingsScreen(name='Settings'))
+        sm.add_widget(SettingsScreen(name='Settings'))      
         sm.add_widget(RunScreen(name='Run'))
         sm.add_widget(StorageScreen(name='Storage'))
         sm.add_widget(SendScreen(name='Send'))
