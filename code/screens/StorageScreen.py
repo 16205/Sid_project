@@ -16,6 +16,7 @@ class StorageScreen(Screen):
         self.winSize = Window.size
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
         Window.bind(on_resize=self.on_window_resize)
+        self.isPopupOpen = False
 
         # _____________the whole page_____________
         pageGrid = GridLayout(cols=1)
@@ -84,11 +85,12 @@ class StorageScreen(Screen):
         content.add_widget(scanImg)
         content.add_widget(buttons)
 
-        popup = Popup(title=scanName,content=content, auto_dismiss=False)
-        self.ids['runPopup'] = popup
+        self.popup = Popup(title=scanName,content=content, auto_dismiss=False)
+        self.ids['runPopup'] = self.popup
 
         # open the popup
-        popup.open()
+        self.popup.open()
+        self.isPopupOpen = True
     
     def doWithFolders(self, methodToRun, doBreak= True):
         for scan in self.scanFolders:
@@ -98,30 +100,43 @@ class StorageScreen(Screen):
                     if doBreak:
                         break
 
-    def sendFolders(self,folders):
+    def sendFolder(self,folder):
         self.manager.current = "Send"
-        #TODO: modify
+        #TODO: send multiple files in one go, so do a loop, add in a list
 
-    def deleteFolders(self,folders):
-        print("deleting")
-        #TODO: faire ce truc
+    def deleteFolders(self,folder):
+        print(f"deleting folder {folder}")
+    
+    def convert(self,folder):
+        print(f'Convert {folder} to a .obj file')
+
     def callback(self, instance):        
         name = instance.text
-
+        print(self.manager.screens)
         if name == "Back":
             self.manager.current = "Home"
         elif name == "Delete":
-            self.doWithFolders(self.deleteFolders,False)
+            if self.isPopupOpen:
+                self.doWithFolders(self.deleteFolders)
+            else:
+                self.doWithFolders(self.deleteFolders,False)
         elif name == "Convert":
-            print('Convert to .obj 3D or printable 3D file')
+            if self.isPopupOpen:
+                self.doWithFolders(self.convert)
+            else:
+                self.doWithFolders(self.convert, False)
         elif name == "Send":
-            # TODO: gérer cette couille
-            pass
-            # self.doWithFolders(self.sendFolders)
-            # self.manager.current = "Send"
+            if self.isPopupOpen:
+                self.doWithFolders(self.sendFolder, False)
+                self.ids[str("runPopup")].dismiss()
+                self.isPopupOpen = False
+            else:
+                self.doWithFolders(self.sendFolder, False)
+
         elif name == "Open":
             self.doWithFolders(self.openScanPopup)
         elif name =="Close":
             self.ids[str("runPopup")].dismiss()
+            self.isPopupOpen = False
         else:
             print('The button %s is not in the list of recognized buttons' % (instance))
