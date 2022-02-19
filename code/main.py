@@ -11,7 +11,7 @@ from screens.SettingsScreen import SettingsScreen
 class MainApp(App):
     
     def build(self):
-        self.title = "SID 0.3"
+        self.title = "SID alpha version 1.0"
 
         # build the screen manager
         sm = ScreenManager(transition=FadeTransition())
@@ -20,7 +20,7 @@ class MainApp(App):
         sm.add_widget(SettingsScreen(name='Settings'))      
         sm.add_widget(RunScreen(name='Run'))
         sm.add_widget(StorageScreen(name='Storage'))
-        sm.add_widget(SendScreen(name='Send'))
+        # sm.add_widget(SendScreen(name='Send'))
 
         return sm
 

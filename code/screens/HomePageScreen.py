@@ -10,9 +10,9 @@ class HomePageScreen(Screen):
         winSize = Window.size
         grid = GridLayout(cols=2, padding = (winSize[0]/10,winSize[1]/10), spacing=(winSize[0]/50,winSize[1]/50))
 
-        namesList = ["Run","Settings","Storage","Send"]
+        namesList = ["Run","Settings","Storage"]
 
-        for i in range (4):
+        for i in range (len(namesList)):
             btn = Button(text=namesList[i], font_size=24, background_color=(0.082,0.629,0.925,1))
             btn.bind(on_press=self.callback)
             grid.add_widget(btn)  
@@ -29,7 +29,7 @@ class HomePageScreen(Screen):
             self.manager.current = "Settings"
         elif name == "Storage":
             self.manager.current = "Storage"
-        elif name == "Send":
-            self.manager.current = "Send"
+        # elif name == "Send":
+        #     self.manager.current = "Send"
         else:
             print('The button %s is not in the list of recognized buttons' % (instance))

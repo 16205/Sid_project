@@ -66,6 +66,14 @@ class SettingsScreen(Screen):
         pageGrid.add_widget(bottomGrid)
         self.add_widget(pageGrid)
 
+        """
+        TODO: 
+            - add radio buton to select 3D object file to convert to (.obj only?)
+            - add radio button to select by which means will we send the files
+                - usb
+                - wifi / scp / SSH => add apearing button to establish ssh connection or stg
+        """
+
     def callback(self, instance):        
         name = instance.text
 
