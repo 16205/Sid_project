@@ -1,5 +1,5 @@
-import cv2 
-import numpy as np 
+import cv2
+import numpy as np
 import os
 
 #########################################################################################################
@@ -17,7 +17,8 @@ def calibration():
     #les images sont dans le dossier configuration
     directory = "calibration"
     #on stocke les images modifiées dans un sous-dossier
-    result_directory = "calibration/clalibration_result"
+    os.system('mkdir calibration/calibration_result')
+    result_directory = "calibration/calibration_result"
     #creating arrays to store the object points and the image points
     objpoints = [] #3D points in the real world space
     imgpoints = [] #2D points in the image plane
@@ -30,11 +31,11 @@ def calibration():
         print(filename)
         image = cv2.imread(filename)
         # Convert the image to grayscale
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  
-    
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
         # Find the corners on the chessboard
         success, corners = cv2.findChessboardCorners(gray, (nY, nX), None)
-        
+
         # If the corners are found by the algorithm, draw them
         if success == True:
             objpoints.append(objp)
@@ -43,7 +44,7 @@ def calibration():
             # Draw the corners
             cv2.drawChessboardCorners(image, (nY, nX), corners, success)
             #on écrit les images modifiées dans un fichiers afin de les voir
-            new_filename =  result_directory + filename[len(directory)+1::]    
+            new_filename = result_directory + '/'+ filename[len(directory)+1::]
             # Save the new image in the working directory
             cv2.imwrite(new_filename, image)
     print("calibration's images processing done")
