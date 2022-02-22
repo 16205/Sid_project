@@ -5,7 +5,9 @@ import os
 #########################################################################################################
 #################################   CALIRBRATION    #####################################################
 #########################################################################################################
-
+'''
+methode qui retourne les caractéristiques du système nécessaires pour le traitement d'image
+'''
 def calibration():
     #on définit le chessboard
     number_of_square_X = 10
@@ -13,9 +15,9 @@ def calibration():
     nX = number_of_square_X - 1 #le nombre de coins intérieur
     nY = number_of_square_Y - 1
     #les images sont dans le dossier configuration
-    directory = "configuration"
+    directory = "calibration"
     #on stocke les images modifiées dans un sous-dossier
-    result_directory = "configuration/conf_result"
+    result_directory = "calibration/clalibration_result"
     #creating arrays to store the object points and the image points
     objpoints = [] #3D points in the real world space
     imgpoints = [] #2D points in the image plane
@@ -49,3 +51,4 @@ def calibration():
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
     return ret, mtx, dist, rvecs, tvecs
+
