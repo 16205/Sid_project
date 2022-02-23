@@ -33,7 +33,7 @@ class StorageScreen(Screen):
         scanGrid.bind(minimum_height=scanGrid.setter('height'))
         self.ids["scanGrid"] = scanGrid
         
-        self.scanFolders = [name for name in os.listdir(f'{cwd}/../scans') if os.path.isdir(os.path.join(f'{cwd}/../scans', name))]
+        self.scanFolders = [name for name in os.listdir(f'{cwd}/scans') if os.path.isdir(os.path.join(f'{cwd}/scans', name))]
         for i in range (len(self.scanFolders)):
             toggle = ToggleButton(text=self.scanFolders[i], font_size=24, background_normal="res/folder.png",
                         background_down="res/folder_open.png",size_hint = (None, None))
