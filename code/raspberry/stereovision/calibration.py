@@ -51,5 +51,5 @@ def calibration():
     #on fait la calibration grâce à opencv
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-    return ret, mtx, dist, rvecs, tvecs
+    return mtx, dist, rvecs, tvecs
 
