@@ -3,6 +3,12 @@ import os
 import pexpect
 from pexpect import pxssh
 
+'''
+méthode pour récupérer  une image chez le slave 
+
+param1 : scan_name, le nom du scan auquel appartient l'image
+param2 :picture_name, le nom de l'image a récupérer 
+'''
 def getPictureSlave(scan_name, picture_name):
     #create the object to interact with the terminal
     child = pexpect.spawn('scp pi@piSlave.local:'+scan_name+'/'+picture_name+'.jpg  '+scan_name+'/'+picture_name+'.jpg')
