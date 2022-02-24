@@ -81,9 +81,9 @@ class StorageScreen(Screen):
 
         # images 
         try:
-            scanImg = Image(source='scans/'+scanName+'/sid.jpg')
+            scanImg = Image(source=self.scanPath+"/"+scanName+'/sid.jpg')
         except:
-            scanImg = Image(source=self.scanPath+scanName+'/sid.jpg')
+            scanImg = Image(source='scans/'+scanName+'/sid.jpg')
 
         # buttons
         buttons = GridLayout(cols=4,padding = (self.winSize[0]/50,self.winSize[1]/50), 
