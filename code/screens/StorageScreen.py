@@ -23,6 +23,7 @@ class StorageScreen(Screen):
         cwd = os.getcwd()  # Get the current working directory (cwd)
         files = os.listdir(cwd)  # Get all the files in that directory
         print("Files in %r: %s" % (cwd, files))
+        self.scanPath = os.path.dirname(cwd) + "/scans"
 
         # _____________the whole page_____________
         pageGrid = GridLayout(cols=1)
@@ -32,8 +33,10 @@ class StorageScreen(Screen):
                                 padding = (self.winSize[0]/50,self.winSize[1]/50),size_hint_y = None)
         scanGrid.bind(minimum_height=scanGrid.setter('height'))
         self.ids["scanGrid"] = scanGrid
-        
-        self.scanFolders = [name for name in os.listdir(f'{cwd}/scans') if os.path.isdir(os.path.join(f'{cwd}/scans', name))]
+        try:
+            self.scanFolders = [name for name in os.listdir(f'{cwd}/scans') if os.path.isdir(os.path.join(f'{cwd}/scans', name))]
+        except:
+            self.scanFolders = [name for name in os.listdir(self.scanPath) if os.path.isdir(os.path.join(self.scanPath, name))]
         for i in range (len(self.scanFolders)):
             toggle = ToggleButton(text=self.scanFolders[i], font_size=24, background_normal="res/folder.png",
                         background_down="res/folder_open.png",size_hint = (None, None))
@@ -77,7 +80,10 @@ class StorageScreen(Screen):
         content = GridLayout(cols=1)
 
         # images 
-        scanImg = Image(source='scans/'+scanName+'/sid.jpg')
+        try:
+            scanImg = Image(source='scans/'+scanName+'/sid.jpg')
+        except:
+            scanImg = Image(source=self.scanPath+scanName+'/sid.jpg')
 
         # buttons
         buttons = GridLayout(cols=4,padding = (self.winSize[0]/50,self.winSize[1]/50), 
