@@ -29,7 +29,7 @@ class StorageScreen(Screen):
         pageGrid = GridLayout(cols=1)
 
         # folders of the scans
-        scanGrid = GridLayout(cols=4, spacing=(self.winSize[0]/20,self.winSize[1]/20),
+        scanGrid = GridLayout(cols=5, spacing=(self.winSize[0]/20,self.winSize[1]/20),
                                 padding = (self.winSize[0]/50,self.winSize[1]/50),size_hint_y = None)
         scanGrid.bind(minimum_height=scanGrid.setter('height'))
         self.ids["scanGrid"] = scanGrid
@@ -71,8 +71,8 @@ class StorageScreen(Screen):
     def on_window_resize(self, window, width, height):
         # adjusts folders height and width
         for elem in self.ids["scanGrid"].children:
-            elem.height = height /4
-            elem.width = width /5
+            elem.height = height /3
+            elem.width = width /6
 
     
     def openScanPopup(self,scanName):
