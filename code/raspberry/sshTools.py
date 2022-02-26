@@ -30,7 +30,7 @@ def  takePictureWithSlave(scan_name, picture_name):
     try:
         ssh  = pxssh.pxssh()
         hostname, username, password ='piSlave.local', 'pi', 'pi'
-        ssh.login(hostname, username, password) #on connecte le client
+        ssh.login(hostname, username, password, sync_multiplier=5, auto_prompt_reset=False) #on connecte le client
         ssh.sendline('python3 prise_image_bon.py '+scan_name+' '+picture_name)#taking and saving the picture
         ssh.logout()
 
@@ -48,7 +48,7 @@ def createFolderSlave(folder_name):
     try:
         ssh = pxssh.pxssh()
         hostname, username, password ='piSlave.local', 'pi', 'pi'
-        ssh.login(hostname, username, password) #on connecte le client
+        ssh.login(hostname, username, password, sync_multiplier=5, auto_prompt_reset=False) #on connecte le client
         ssh.sendline('mkdir '+folder_name)
         ssh.logout()
     except pxssh.ExceptionPxssh as e:
@@ -68,7 +68,7 @@ def scan (name_scan, step_number):
         #second we create a directories to store the images in the master and in the slave
         os.system('mkdir '+name_scan) #create the directory
         ssh.sendline('mkdir '+name_scan)#creating a directory in the slave to store the images
-   
+
         ############################################################
         #third we make a loop to take all the pictures with the slave and with the master
         for i in range(step_number):
@@ -79,11 +79,9 @@ def scan (name_scan, step_number):
             os.system('raspistill -o '+name_picture_r+".jpg") #taking the image from the master 
             ssh.sendline('libcamera-still -o '+name_picture_l+'.jpg')#taking picture with the slave
             getPictureSlave(name_scan,name_picture_l)#loadinf the picture from the slave in the master's directory
-        
 
-            
 
 
     except pxssh.ExceptionPxssh as e:
         print(str(e))
-     
+

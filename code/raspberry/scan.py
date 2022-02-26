@@ -11,19 +11,24 @@ import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
 import stepper
 
-#reading the scan_name from the input 
+#reading the scan_name from the input
 scan_name = sys.argv[1]
 quality = sys.argv[2]
-
+print(scan_name)
+print(quality)
 #define GPIO pins for the motor
+GPIO.setmode(GPIO.BOARD)
 direction= 22 # Direction (DIR) GPIO Pin
+GPIO.setup(direction, GPIO.OUT)
 step = 23 # Step GPIO Pin
+GPIO.setup(step, GPIO.OUT)
 EN_pin = 24 # enable pin (LOW to enable)
-
+GPIO.setup(EN_pin, GPIO.OUT)
+print("setup motor done")
 #defining the caracteristic of on step of the motor
 if quality == "test":
     step_number = 10
-    step_size = "full"
+    step_size = "Full"
     step_nbr = 20
 elif quality == "low":
     step_number = 1
@@ -41,11 +46,12 @@ elif quality == "high":
 #on crée les dossier pour le scan dans le master et dans la slave 
 os.system('mkdir '+ scan_name) #on crée le dossier dans le master
 sshTools.createFolderSlave(scan_name) #on crée le dossier dans le slave
+print("folders created")
 
 for i in range(step_nbr):
     name_picture_r = scan_name +"_R_"+str(i) #create the file name for the i th picture from the rigth camera
     name_picture_l = scan_name+"_L_"+str(i) #create the filename for the i th picture from the left camera
-    #on prend les images 
+    #on prend les images
     os.system('python3 prise_image_bon.py '+scan_name+' '+name_picture_r) #on pose que le master sera la camera de droite
     sshTools.takePictureWithSlave(scan_name, name_picture_l)
     stepper.makeStep(step_number, step_size)

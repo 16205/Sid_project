@@ -1,10 +1,11 @@
 import sys
 import cv2
-from picamera.array import piRGBArray
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 import time
 
 # initialize the camera and grab a reference to the raw camera capture  
-camera = piCamera()
+camera = PiCamera()
 rawCapture = PiRGBArray(camera)
 
 #allow the camera to warm up
