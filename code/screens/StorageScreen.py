@@ -16,25 +16,29 @@ class StorageScreen(Screen):
 
         self.winSize = Window.size
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
-        Window.bind(on_resize=self.on_window_resize)
         self.isPopupOpen = False
 
+        # resize the icons with correct aspect ratio
+        Window.bind(on_resize=self.on_window_resize) 
+        
         # get the files from the os
-        cwd = os.getcwd()  # Get the current working directory (cwd)
-        files = os.listdir(cwd)  # Get all the files in that directory
-        print("Files in %r: %s" % (cwd, files))
-        self.scanPath = os.path.dirname(cwd) + "/scans"
+        self.cwd = os.getcwd()  # Get the current working directory (cwd)
+        self.scanPath = os.path.dirname(self.cwd) + "/scans"
 
-        # _____________the whole page_____________
-        pageGrid = GridLayout(cols=1)
+        self.add_widgets()
 
-        # folders of the scans
+    def add_widgets(self):
+        """
+        Do : adds widgets to the page 
+        """
+        # Grid layout with all the scans in fodlers
         scanGrid = GridLayout(cols=5, spacing=(self.winSize[0]/20,self.winSize[1]/20),
                                 padding = (self.winSize[0]/50,self.winSize[1]/50),size_hint_y = None)
         scanGrid.bind(minimum_height=scanGrid.setter('height'))
         self.ids["scanGrid"] = scanGrid
+
         try:
-            self.scanFolders = [name for name in os.listdir(f'{cwd}/scans') if os.path.isdir(os.path.join(f'{cwd}/scans', name))]
+            self.scanFolders = [name for name in os.listdir(f'{self.cwd}/scans') if os.path.isdir(os.path.join(f'{self.cwd}/scans', name))]
         except:
             self.scanFolders = [name for name in os.listdir(self.scanPath) if os.path.isdir(os.path.join(self.scanPath, name))]
         for i in range (len(self.scanFolders)):
@@ -48,7 +52,6 @@ class StorageScreen(Screen):
         bottomGrid = GridLayout(rows=1,padding = (self.winSize[0]/50,self.winSize[1]/50), 
                                 spacing=(self.winSize[0]/50,self.winSize[1]/50),
                                 size_hint_y=None, height=self.winSize[1]/5)
-
         namesList = ["Back","Delete","Convert","Open","Send"]
 
         for i in range (len(namesList)):
@@ -58,6 +61,9 @@ class StorageScreen(Screen):
 
         # scroll view
         root = ScrollView(size=scanGrid.size, do_scroll_y=True )
+
+        # Layout for the whole page
+        pageGrid = GridLayout(cols=1)
 
         # add widgets to the screen
         root.add_widget(scanGrid)
@@ -69,14 +75,18 @@ class StorageScreen(Screen):
         self.on_window_resize(Window,self.winSize[0], self.winSize[1])
 
     def on_window_resize(self, window, width, height):
-        # adjusts folders height and width
+        """
+        Do : adjusts folder icons height and width
+        """
         for elem in self.ids["scanGrid"].children:
             elem.height = height /3
             elem.width = width /6
 
     
     def openScanPopup(self,scanName):
-        # create content and add to the popup
+        """
+        Do : create content and add to the popup
+        """
         content = GridLayout(cols=1)
 
         # images 
@@ -108,6 +118,9 @@ class StorageScreen(Screen):
         self.isPopupOpen = True
 
     def operationPopup(self,folders,operation,methodToRun):
+        """
+        Do : creates a popup when an operation is executed
+        """
         # btn callback
         def btnCallBack(instance):
             name = instance.text            
@@ -132,11 +145,8 @@ class StorageScreen(Screen):
                             spacing=(self.winSize[0]/50,self.winSize[1]/50),
                             size_hint_y=None, height=self.winSize[1]/5)
 
-        btnYes = Button(text="Yes", font_size=24, background_color=self.BUTTON_COLOR)        
-        btnNo = Button(text="No", font_size=24, background_color=self.BUTTON_COLOR)
-
-        btnYes.bind(on_press=btnCallBack)
-        btnNo.bind(on_press=btnCallBack)
+        btnYes = Button(text="Yes", font_size=24, background_color=self.BUTTON_COLOR,on_press=btnCallBack)        
+        btnNo = Button(text="No", font_size=24, background_color=self.BUTTON_COLOR,on_press=btnCallBack)
 
         buttons.add_widget(btnNo) 
         buttons.add_widget(btnYes)  
@@ -145,13 +155,21 @@ class StorageScreen(Screen):
         content.add_widget(label)
         content.add_widget(buttons)
 
+        # create the popup
         popup = Popup(title=operation,content=content, auto_dismiss=False, size_hint=(.5,.5))
         self.ids[f'{operation}Popup'] = popup
+
         # open the popup
         popup.open()
-        # self.isPopupOpen = True        
     
     def doWithFolders(self, methodToRun, doBreak= True, operationName=""):
+        """
+        Do : loops through the selected folders and runs the method in the parameter \n
+        Params: 
+            - methodToRun = method to pass and run for each folder 
+            - doBreak = breaks after the first method is added in the "folders" list
+            - operationName = name of the operation to pass
+        """
         folders = []
         for scan in self.scanFolders:
             name = f"folder_{scan}"

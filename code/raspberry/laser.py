@@ -1,9 +1,13 @@
-from gpiozero import LED
+# from gpiozero import LED
 from time import sleep
 
-led = LED(17)
+# led = LED(17)
+
+def turnLaserOn():
+    print("on")
+    # led.on()
+def turnLaserOff():
+    print("off")
+    # led.off()
 
 
-led.on()
-sleep(5)
-led.off()

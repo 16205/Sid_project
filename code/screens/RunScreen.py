@@ -10,6 +10,11 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.popup import Popup
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
+import sys
+import os
+sys.path.append(os.getcwd())
+from raspberry.laser import *
+
 
 class RunScreen(Screen):
     
@@ -20,35 +25,37 @@ class RunScreen(Screen):
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
         self.isPaused = False
 
-        # _____________the whole page_____________
-        pageGrid = GridLayout(cols=1)
+        self.addWidgets()
         
-        # _____________Grid of parameters____________
+    def addWidgets(self):
+        """
+        Do : adds widgets to the page 
+        """
+                
+        # Grid containing the parameters
         paramGrid = GridLayout(cols=2)
         self.ids['paramGrid'] = paramGrid
 
-        # RESOLUTION
-        resolutionLabel = Label(text="Resolution",size_hint_y=None, height=self.winSize[1]/5)
-        resLow = CheckBox(group='res', allow_no_selection=False)
-        resMedium = CheckBox(group='res', active=True, allow_no_selection=False)
-        resHigh = CheckBox(group='res', allow_no_selection=False)
-        resLowLabel = Label(text="Low")
-        resMediumLabel = Label(text="Medium")
-        resHighLabel = Label(text="High")
+        # Resolution widgets : label and radiobuttons
+        resolutionLabel = Label(text="Resolution",size_hint_y=None, height=self.winSize[1]/5)        
+
+        resWidget = []
+        resWidget.append(Label(text="Low"))
+        resWidget.append(Label(text="Medium"))
+        resWidget.append(Label(text="High"))
+        resWidget.append(CheckBox(group='res', allow_no_selection=False))
+        resWidget.append(CheckBox(group='res', active=True, allow_no_selection=False))
+        resWidget.append(CheckBox(group='res', allow_no_selection=False))
 
         resolutionGrid = GridLayout(cols=3,size_hint_y=None, height=self.winSize[1]/5)
-        resolutionGrid.add_widget(resLowLabel)
-        resolutionGrid.add_widget(resMediumLabel)
-        resolutionGrid.add_widget(resHighLabel)
-        resolutionGrid.add_widget(resLow)
-        resolutionGrid.add_widget(resMedium)
-        resolutionGrid.add_widget(resHigh)
+        for item in resWidget:
+            resolutionGrid.add_widget(item)
 
         paramGrid.add_widget(resolutionLabel)
         paramGrid.add_widget(resolutionGrid)
 
 
-        # SCALE
+        # Scale widgets : label and slider
         scaleLabel = Label(text="Scale",size_hint_y=None, height=self.winSize[1]/5)
         scaleSlider = Slider(min=5, max=20, value=10, step = 5,value_track=True,value_track_color=[1, 1, 0, 1])
         scaleValueLabel = Label(text="10x10x10 cm")
@@ -58,6 +65,7 @@ class RunScreen(Screen):
             Do: updates the value of the slider
             """
             scaleValueLabel.text = f"{value}x{value}x{value} cm"
+        
         scaleSlider.bind(value=OnSliderValueChange)
 
         sliderGrid = GridLayout(cols=1,size_hint_y=None, height=self.winSize[1]/5)
@@ -66,35 +74,36 @@ class RunScreen(Screen):
         paramGrid.add_widget(scaleLabel)
         paramGrid.add_widget(sliderGrid)
 
-        # _____________Grid of bottom buttons_____________
+        # Grid layout: buttons in the bottom of the screen
         bottomGrid = GridLayout(rows=1,padding = (self.winSize[0]/50,self.winSize[1]/50), 
                                 spacing=(self.winSize[0]/50,self.winSize[1]/50),
                                 size_hint_y=None, height=self.winSize[1]/5)
-
         namesList = ["Back","Calibrate","Run"]
 
         for i in range (len(namesList)):
             btn = Button(text=namesList[i], font_size=24, background_color=self.BUTTON_COLOR)
             btn.bind(on_press=self.callback)
             bottomGrid.add_widget(btn)  
+
+        # Whole page layout
+        pageGrid = GridLayout(cols=1)
         
-        # ___________add widgets to the page_________________
+        # Adding all the layouts to the page
         pageGrid.add_widget(paramGrid)
         pageGrid.add_widget(bottomGrid)
         self.add_widget(pageGrid)
-    
-    
+
     def showCalibration(self):
         """
         Do: activates the cameras to calibrate with a chessboard
-        OnCapturePressEvent: capture an image and launch the script to calibrate
         """
+        # TODO: import camera image
         calibImg = Image(source='res/not_found.png')
         self.ids['calibImg'] = calibImg
 
         anchor = AnchorLayout(anchor_x='center', anchor_y='center')
         self.ids["anchor"] = anchor
-        button = Button(text="Capture",font_size=24, background_color=self.BUTTON_COLOR, size_hint =(1,None)) #TODO: adjust height
+        button = Button(text="Capture",font_size=24, background_color=self.BUTTON_COLOR, size_hint =(1,None))
         button.bind(on_press=self.callback)
         self.ids['captureButton'] = button
 
@@ -104,7 +113,7 @@ class RunScreen(Screen):
         
     def hideCalibration(self):
         """
-        Do: delete the elements to hide the camera
+        Do: delete the elements to hide the camera calibration widgets
         """
         try:
             self.ids["paramGrid"].remove_widget(self.ids["calibImg"])
@@ -116,8 +125,9 @@ class RunScreen(Screen):
     def showRunPopup(self):
         """
         Do: popup to show the progression of the scan
-        & launches script that scans an object
         """
+        # TODO: import image capture each x photos taken
+
         # schedule check
         self.progress = Clock.schedule_interval(self.updateRun,1)
 
@@ -158,6 +168,10 @@ class RunScreen(Screen):
         popup.open()
 
     def updateRun(self, dt):
+        """
+        Do: updates the advancement of the scan
+        """
+        # TODO: import script to check advancement of pictures
         if self.ids["progressBar"].value == 100:
             self.progress.cancel()
         elif self.isPaused == False:
@@ -182,16 +196,26 @@ class RunScreen(Screen):
                 self.showCalibration()
         elif name == "Run":
             self.showRunPopup()
+            turnLaserOn()
+            # TODO: call script to take pictures
+            # TODO: call script to rotate stepper
         elif name =="Capture":
+            # TODO: call script to calibrate and save settings
             print("calibrating")
         elif name =="Close":
+            turnLaserOff()
+            # TODO: save pictures in specific folder
             self.ids[str("runPopup")].dismiss()
             self.progress.cancel()
         elif name =="Cancel":
+            # TODO: delete pictures that were just taken
+            turnLaserOff()
             self.progress.cancel()
         elif name =="Pause":
+            # TODO: pause the running loop
             self.isPaused = True
         elif name =="Resume":
+            # TODO: resume the progress
             self.isPaused = False
         else:
             print('The button %s is not in the list of recognized buttons' % (instance))

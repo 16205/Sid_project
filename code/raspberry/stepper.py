@@ -12,6 +12,7 @@
 #
 """
 source = https://makersportal.com/blog/raspberry-pi-stepper-motor-control-with-nema-17
+TUTO = https://lastminuteengineers.com/a4988-stepper-motor-driver-arduino-tutorial/
 library = https://github.com/gavinlyonsrepo/RpiMotorLib
 """
 
@@ -30,15 +31,15 @@ step = 23 # Step GPIO Pin
 EN_pin = 24 # enable pin (LOW to enable)
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
-mymotortest = RpiMotorLib.A4988Nema(direction, step, (21,21,21), "DRV8825")
-mymotortest = RpiMotorLib
-GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
+mymotortest = RpiMotorLib.A4988Nema(direction, step, (21,21,21), "A4988")
+# mymotortest = RpiMotorLib
+# GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
 
 ###########################
 # Actual motor control
 ###########################
 #
-GPIO.output(EN_pin,GPIO.LOW) # pull enable to low to enable motor
+# GPIO.output(EN_pin,GPIO.LOW) # pull enable to low to enable motor
 mymotortest.motor_go(False, # True=Clockwise, False=Counter-Clockwise
                      "Full" , # Step type (Full,Half,1/4,1/8,1/16,1/32)
                      200, # number of steps
