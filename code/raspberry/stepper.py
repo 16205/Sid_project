@@ -47,3 +47,12 @@ mymotortest.motor_go(False, # True=Clockwise, False=Counter-Clockwise
                      False, # True = print verbose output 
                      .05) # initial delay [sec]
 GPIO.cleanup() # clear GPIO allocations after run
+
+def makeStep(previous_step, next_step, step_size):
+    GPIO.output(EN_pin,GPIO.LOW) # pull enable to low to enable motor
+    mymotortest.motor_go(True, # True=Clockwise, False=Counter-Clockwise
+                     "Full" , # Step type (Full,Half,1/4,1/8,1/16,1/32)
+                     20, # number of steps
+                     .0005, # step delay [sec]
+                     False, # True = print verbose output 
+                     .05) # initial delay [sec]
