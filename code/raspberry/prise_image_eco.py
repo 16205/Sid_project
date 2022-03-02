@@ -23,6 +23,8 @@ def scan (name_scan, step_number):
         for i in range(step_number):
             name_picture_r = name_scan+"_R_"+str(i) #create the file name for the i th picture from the rigth camera
             name_picture_l = name_scan+"_L_"+str(i) #create the filename for the i th picture from the left camera
+            os.system('mkdir '+name_picture_r) #on lance le script de prise d'image sur le master
+            ssh.sendline('mkdir '+name_picture_r) #on lance le script de prise d'image sur le master
             
 
     except pxssh.ExceptionPxssh as e:
