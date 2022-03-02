@@ -24,17 +24,11 @@ def getPictureSlave(scan_name, picture_name):
 method to take a picture with the camera of the slave
 the picture will be stored in the folder of the current scan
 
-the parameters are the name of the scan and the name of the picture to take
+the parameters are the ssh client, the name of the scan and the name of the picture to take
 '''
 def  takePictureWithSlave(ssh, scan_name, picture_name):
     try:
-        ssh = pxssh.pxssh() #creating the ssh client
-        hostname = 'piSlave.local'
-        username = 'pi'
-        password = 'pi'
-        ssh.login(hostname, username, password) #connecting the ssh client
-        ssh.sendline('cd '+scan_name) #going into the folder of the scan
-        ssh.sendline('libcamera-still -r -o '+picture_name+'.jpg')#taking and saving the picture
+        ssh.sendline('python3 prise_image_bon.py '+scan_name+' '+picture_name)#taking and saving the picture
         ssh.logout()
 
     except pxssh.ExceptionPxssh as e:
@@ -44,15 +38,11 @@ def  takePictureWithSlave(ssh, scan_name, picture_name):
 '''
 method to create a folder to store the pictures of a scan
 
-parameters is the name of the folder to create
+param1 : the ssh client to connect 
+param2 : the name of the folder to create
 '''
-def createFolderSlave(folder_name):
+def createFolderSlave(ssh, folder_name):
     try:
-        ssh = pxssh.pxssh() #creating the ssh client
-        hostname = 'piSlave.local'
-        username = 'pi'
-        password = 'pi'
-        ssh.login(hostname, username, password) #connecting the ssh client
         ssh.sendline('mkdir '+folder_name)
     except pxssh.ExceptionPxssh as e:
         print("connection failed to login")
