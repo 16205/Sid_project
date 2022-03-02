@@ -26,8 +26,11 @@ the picture will be stored in the folder of the current scan
 
 the parameters are the ssh client, the name of the scan and the name of the picture to take
 '''
-def  takePictureWithSlave(ssh, scan_name, picture_name):
+def  takePictureWithSlave(scan_name, picture_name):
     try:
+        ssh  = pxssh.pxssh()
+        hostname, username, password ='piSlave.local', 'pi', 'pi'
+        ssh.login(hostname, username, password) #on connecte le client
         ssh.sendline('python3 prise_image_bon.py '+scan_name+' '+picture_name)#taking and saving the picture
         ssh.logout()
 
@@ -41,9 +44,13 @@ method to create a folder to store the pictures of a scan
 param1 : the ssh client to connect 
 param2 : the name of the folder to create
 '''
-def createFolderSlave(ssh, folder_name):
+def createFolderSlave(folder_name):
     try:
+        ssh = pxssh.pxssh()
+        hostname, username, password ='piSlave.local', 'pi', 'pi'
+        ssh.login(hostname, username, password) #on connecte le client
         ssh.sendline('mkdir '+folder_name)
+        ssh.logout()
     except pxssh.ExceptionPxssh as e:
         print("connection failed to login")
         print(str(e))
