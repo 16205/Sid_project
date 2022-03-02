@@ -1,6 +1,7 @@
 #script to take the images for a scan
 #arg1 : the scan's name
 #arg2 : the number of steps
+from tkinter import N
 import cv2
 import os
 import pexpect
@@ -52,9 +53,14 @@ for i in range(step_nbr):
     name_picture_r = scan_name +"_R_"+str(i) #create the file name for the i th picture from the rigth camera
     name_picture_l = scan_name+"_L_"+str(i) #create the filename for the i th picture from the left camera
     #on prend les images
+    print("name_picture_r = ", name_picture_r)
+    print("name_picture_l = ", name_picture_l)
     os.system('python3 prise_image_bon.py '+scan_name+' '+name_picture_r) #on pose que le master sera la camera de droite
+    print("im master taken")
     sshTools.takePictureWithSlave(scan_name, name_picture_l)
+    print("imslave taken")
     stepper.makeStep(step_number, step_size)
+    print("motor step done")
 
     
 #après la prise d'image on recup les images
