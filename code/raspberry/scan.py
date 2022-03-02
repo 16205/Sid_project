@@ -7,7 +7,7 @@ import pexpect
 from pexpect import pxssh
 import sys
 import sshTools
-import rpi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
 import stepper
 
@@ -37,12 +37,13 @@ elif quality == "high":
     step_number = 1
     step_size = "1/32"
     step_nbr = 6400
-    
+
 #on crée le client ssh pout le slave
 try:
     ssh  = pxssh.pxssh()
     hostname, username, password ='piSlave.local', 'pi', 'pi'
     ssh.login(hostname, username, password) #on connecte le client
+
 except pxssh.ExceptionPxssh as e:
     print(str(e))
 
