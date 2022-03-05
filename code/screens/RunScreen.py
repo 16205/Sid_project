@@ -24,6 +24,7 @@ class RunScreen(Screen):
         self.winSize = Window.size
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
         self.isPaused = False
+        self.isLaserOn = False
 
         self.addWidgets()
         
@@ -31,13 +32,14 @@ class RunScreen(Screen):
         """
         Do : adds widgets to the page 
         """
+        widgetHeight = self.winSize[1]/7
                 
         # Grid containing the parameters
         paramGrid = GridLayout(cols=2)
         self.ids['paramGrid'] = paramGrid
 
         # Resolution widgets : label and radiobuttons
-        resolutionLabel = Label(text="Resolution",size_hint_y=None, height=self.winSize[1]/5)        
+        resolutionLabel = Label(text="Resolution",size_hint_y=None, height=widgetHeight)        
 
         resWidget = []
         resWidget.append(Label(text="Low"))
@@ -47,7 +49,7 @@ class RunScreen(Screen):
         resWidget.append(CheckBox(group='res', active=True, allow_no_selection=False))
         resWidget.append(CheckBox(group='res', allow_no_selection=False))
 
-        resolutionGrid = GridLayout(cols=3,size_hint_y=None, height=self.winSize[1]/5)
+        resolutionGrid = GridLayout(cols=3,size_hint_y=None, height=widgetHeight)
         for item in resWidget:
             resolutionGrid.add_widget(item)
 
@@ -56,23 +58,46 @@ class RunScreen(Screen):
 
 
         # Scale widgets : label and slider
-        scaleLabel = Label(text="Scale",size_hint_y=None, height=self.winSize[1]/5)
+        scaleLabel = Label(text="Scale",size_hint_y=None, height=widgetHeight)
         scaleSlider = Slider(min=5, max=20, value=10, step = 5,value_track=True,value_track_color=[1, 1, 0, 1])
         scaleValueLabel = Label(text="10x10x10 cm")
 
         def OnSliderValueChange(instance,value):
             """
-            Do: updates the value of the slider
+            Do: updates the value of the scale
             """
             scaleValueLabel.text = f"{value}x{value}x{value} cm"
         
         scaleSlider.bind(value=OnSliderValueChange)
 
-        sliderGrid = GridLayout(cols=1,size_hint_y=None, height=self.winSize[1]/5)
+        sliderGrid = GridLayout(cols=1,size_hint_y=None, height=widgetHeight)
         sliderGrid.add_widget(scaleValueLabel)
         sliderGrid.add_widget(scaleSlider)
         paramGrid.add_widget(scaleLabel)
         paramGrid.add_widget(sliderGrid)
+
+        # Laser power widget : label and slider
+        laserLabel = Label(text="Laser power",size_hint_y=None, height=widgetHeight)
+        laserSlider = Slider(min=0, max=100, value=50, step = 10,value_track=True,value_track_color=[1, 1, 0, 1])
+        laserValueLabel = Label(text="50%")
+        # sets the laser a duty at the start
+        setDuty(50)
+
+        def OnSliderValueChange(instance,value):
+            """
+            Do: updates the value of the laser
+            """
+            laserValueLabel.text = f"{int(value)}%"
+            setDuty(int(value))
+        
+        laserSlider.bind(value=OnSliderValueChange)
+
+        laserGrid = GridLayout(cols=1,size_hint_y=None, height=widgetHeight)
+        laserGrid.add_widget(laserValueLabel)
+        laserGrid.add_widget(laserSlider)
+        paramGrid.add_widget(laserLabel)
+        paramGrid.add_widget(laserGrid)
+
 
         # Grid layout: buttons in the bottom of the screen
         bottomGrid = GridLayout(rows=1,padding = (self.winSize[0]/50,self.winSize[1]/50), 
@@ -101,15 +126,22 @@ class RunScreen(Screen):
         calibImg = Image(source='res/not_found.png')
         self.ids['calibImg'] = calibImg
 
-        anchor = AnchorLayout(anchor_x='center', anchor_y='center')
-        self.ids["anchor"] = anchor
+        # anchor = AnchorLayout(anchor_x='center', anchor_y='center')
+        # self.ids["anchor"] = anchor
+        grid = GridLayout(cols=1,padding = (self.winSize[0]/50,self.winSize[1]/50),
+                            spacing=(self.winSize[0]/100,self.winSize[1]/100))
+
         button = Button(text="Capture",font_size=24, background_color=self.BUTTON_COLOR, size_hint =(1,None))
         button.bind(on_press=self.callback)
         self.ids['captureButton'] = button
+        grid.add_widget(button)
 
-        anchor.add_widget(button)
+        laserButton = Button(text="Turn laser",font_size=24, background_color=self.BUTTON_COLOR, size_hint =(1,None))
+        laserButton.bind(on_press=self.callback)
+        grid.add_widget(laserButton)
+
         self.ids[str("paramGrid")].add_widget(calibImg)
-        self.ids[str("paramGrid")].add_widget(anchor)
+        self.ids[str("paramGrid")].add_widget(grid)
         
     def hideCalibration(self):
         """
@@ -185,6 +217,7 @@ class RunScreen(Screen):
         Params: instance = which object called the function
         """    
         name = instance.text
+        
 
         if name == "Back":
             self.hideCalibration()
@@ -196,6 +229,7 @@ class RunScreen(Screen):
                 self.showCalibration()
         elif name == "Run":
             self.showRunPopup()
+            
             turnLaserOn()
             # TODO: call script to take pictures
             # TODO: call script to rotate stepper
@@ -217,5 +251,13 @@ class RunScreen(Screen):
         elif name =="Resume":
             # TODO: resume the progress
             self.isPaused = False
+        elif name =="Turn laser":
+            if self.isLaserOn == True:
+                self.isLaserOn = False
+                turnLaserOff()
+            else:
+                self.isLaserOn = True
+                turnLaserOn()
+                
         else:
             print('The button %s is not in the list of recognized buttons' % (instance))
