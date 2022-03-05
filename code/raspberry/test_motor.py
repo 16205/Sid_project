@@ -3,20 +3,19 @@ from RpiMotorLib import RpiMotorLib
 import time
 import stepper
 
-#define GPIO pins for the motor
-GPIO.setmode(GPIO.BOARD)
 direction= 22 # Direction (DIR) GPIO Pin
-GPIO.setup(direction, GPIO.OUT)
 step = 23 # Step GPIO Pin
-GPIO.setup(step, GPIO.OUT)
 EN_pin = 24 # enable pin (LOW to enable)
-GPIO.setup(EN_pin, GPIO.OUT)
+#GPIO.output(EN_pin,GPIO.LOW) # pull enable to low to enable motor
+GPIO_pins = (14, 15, 18)
 
-step_number = 1
-step_size = "1/32"
-step_nbr = 6400
 
-while(True):
-    stepper.makeStep(step_number, step_size)
-    print("step done")
-    
+# Declare a instance of class pass GPIO pins numbers and the motor type
+mymotortest = RpiMotorLib.A4988Nema(direction, step, GPIO_pins, "A4988")
+step_number = 200
+step_size = "Full"
+
+
+#on fait faire un step
+while True:
+	mymotortest.motor_go(False, step_size, step_number, 0.005, False, initdelay = 0.05)

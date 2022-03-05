@@ -58,7 +58,7 @@ for i in range(step_nbr):
     os.system('python3 prise_image_bon.py '+scan_name+' '+name_picture_r) #on pose que le master sera la camera de droite
     print("im master taken")
     sshTools.takePictureWithSlave(scan_name, name_picture_l)
-    print("imslave taken")
+    print("im slave taken")
     stepper.makeStep(step_number, step_size)
     print("motor step done")
 
