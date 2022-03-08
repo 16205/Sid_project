@@ -71,7 +71,7 @@ for i in range(step_count):
     print("im master taken")
     sshTools.takePictureWithSlave(scan_name, name_picture_l)
     print("imslave taken")
-    stepper_temp.make_step(motor_pins, motor_step_counter, step_sequence, direction)
+    
 
 
 #après la prise d'image on recup les images
