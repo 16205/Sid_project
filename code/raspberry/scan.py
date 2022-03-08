@@ -10,7 +10,7 @@ import sys
 import sshTools
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
-import stepper_temp
+
 
 #reading the scan_name from the input
 scan_name = sys.argv[1]
@@ -61,10 +61,7 @@ for i in range(step_nbr):
     print("im master taken")
     sshTools.takePictureWithSlave(scan_name, name_picture_l)
     print("im slave taken")
-    stepper.makeStep(step_number, step_size)
-    print("motor step done")
 
-    
 #après la prise d'image on recup les images
 for i in range(quality):
     name_picture = scan_name+"_L_"+str(i)

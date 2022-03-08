@@ -7,7 +7,7 @@ import pexpect
 from pexpect import pxssh
 import sys
 import sshTools
-import RPI.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 import stepper_temp
 
