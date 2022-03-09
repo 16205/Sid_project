@@ -10,7 +10,7 @@ import sys
 import sshTools
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
-import stepper_temp
+import stepper
 
 #reading the scan_name from the input
 scan_name = sys.argv[1]
