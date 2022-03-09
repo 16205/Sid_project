@@ -3,17 +3,18 @@
 # from gpiozero import LED
 # led = LED(17)
 
+""" USE LASER WITH A PWM PIN"""
+import RPi.GPIO as IO          #calling header file which helps us use GPIO’s of PI
 
-"""USE LASER WITH A PWM PIN"""
+import time                            #calling time to provide delays in program
 
-import RPi.GPIO as GPIO
+IO.setwarnings(False)           #do not show any warnings
 
-ledpin = 12				        # PWM pin connected to LED
-GPIO.setwarnings(False)			#disable warnings
-GPIO.setmode(GPIO.BOARD)		#set pin numbering system
-GPIO.setup(ledpin,GPIO.OUT)
-pi_pwm = GPIO.PWM(ledpin,1000)  #create PWM instance with frequency
-	
+IO.setmode (IO.BCM)         #we are programming the GPIO by BCM pin numbers. (PIN35 as ‘GPIO19’)
+
+IO.setup(12,IO.OUT)           # initialize GPIO19 as an output.
+
+p = IO.PWM(12,100)          #GPIO19 as PWM output, with 100Hz frequency
 
 def setDuty(duty):
     """
@@ -22,14 +23,14 @@ def setDuty(duty):
     """
     global dutyCycle
     dutyCycle = duty
-    # pi_pwm.ChangeDutyCycle(duty)
+    p.ChangeDutyCycle(duty)
     
 def turnLaserOn():
     print("on")
-    pi_pwm.start(dutyCycle)	
+    p.start(dutyCycle)	
     print(dutyCycle)
     # led.on()
 def turnLaserOff():
     print("off")
-    pi_pwm.stop()
+    p.stop()
     # led.off()

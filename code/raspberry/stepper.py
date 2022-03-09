@@ -58,23 +58,24 @@ half = 400 ; 0.9°
 '''
 
 def makeStep(number_of_step, step_size):
-    global mymotortest
-    mymotortest = RpiMotorLib.A4988Nema(direction, step, (21,21,21), "A4988")
-    GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
+    # global mymotortest
+    # mymotortest = RpiMotorLib.A4988Nema(direction, step, (21,21,21), "A4988")
+    # GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
     print(f"making {number_of_step} steps")
-    GPIO.output(EN_pin,GPIO.LOW) # pull enable to low to enable motor
-    mymotortest.motor_go(False, # True=Clockwise, False=Counter-Clockwise
-                     "Full" , # Step type (Full,Half,1/4,1/8,1/16,1/32)
-                     200, # number of steps
-                     .0005, # step delay [sec]
-                     False, # True = print verbose output 
-                     .05) # initial delay [sec]
+    # GPIO.output(EN_pin,GPIO.LOW) # pull enable to low to enable motor
+    #mymotortest.motor_go(False, # True=Clockwise, False=Counter-Clockwise
+    #                 "Full" , # Step type (Full,Half,1/4,1/8,1/16,1/32)
+    #                 200, # number of steps
+    #                 .0005, # step delay [sec]
+    #                 False, # True = print verbose output 
+    #                 .05) # initial delay [sec]
 
-    GPIO.cleanup() # clear GPIO allocations after run
+    # GPIO.cleanup() # clear GPIO allocations after run
     
 
 
 def stopMotor():
-    mymotortest.motor_stop()
-    GPIO.cleanup()
+    print("stop")
+    # mymotortest.motor_stop()
+    # GPIO.cleanup()
  
