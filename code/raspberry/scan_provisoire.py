@@ -7,7 +7,7 @@ import pexpect
 from pexpect import pxssh
 import sys
 import sshTools
-import RPI.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 import stepper_temp
 
@@ -32,7 +32,7 @@ step_sequence = [[1,0,0,1],
                  [0,0,1,1],
                  [0,0,0,1]]
 
-GPIO.setmode( GPIO.BCM )  
+GPIO.setmode( GPIO.BCM )
 
 #set up the pins
 GPIO.setmode( GPIO.BCM )
@@ -72,8 +72,7 @@ for i in range(step_count):
     sshTools.takePictureWithSlave(scan_name, name_picture_l)
     print("imslave taken")
     stepper_temp.make_step(motor_pins, motor_step_counter, step_sequence, direction)
-    
-    
+
 
 #après la prise d'image on recup les images
 for i in range(step_count):

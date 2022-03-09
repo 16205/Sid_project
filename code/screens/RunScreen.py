@@ -14,7 +14,7 @@ import sys
 import os
 sys.path.append(os.getcwd())
 from raspberry.laser import *
-
+from raspberry.stepper import *
 
 class RunScreen(Screen):
     
@@ -203,7 +203,7 @@ class RunScreen(Screen):
         """
         Do: updates the advancement of the scan
         """
-        # TODO: import script to check advancement of pictures
+        # TODO: import script to check advancement of pictures by counting the number of files
         if self.ids["progressBar"].value == 100:
             self.progress.cancel()
         elif self.isPaused == False:
@@ -231,19 +231,21 @@ class RunScreen(Screen):
             self.showRunPopup()
             
             turnLaserOn()
-            # TODO: call script to take pictures
-            # TODO: call script to rotate stepper
+            makeStep(200, "full")
+            # TODO: call script to scan the whole
         elif name =="Capture":
             # TODO: call script to calibrate and save settings
             print("calibrating")
         elif name =="Close":
             turnLaserOff()
+            # stopMotor()
             # TODO: save pictures in specific folder
             self.ids[str("runPopup")].dismiss()
             self.progress.cancel()
         elif name =="Cancel":
             # TODO: delete pictures that were just taken
             turnLaserOff()
+            stopMotor()
             self.progress.cancel()
         elif name =="Pause":
             # TODO: pause the running loop

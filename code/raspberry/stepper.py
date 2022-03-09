@@ -31,22 +31,21 @@ step = 23 # Step GPIO Pin
 EN_pin = 24 # enable pin (LOW to enable)
 
 # Declare a instance of class pass GPIO pins numbers and the motor type
-mymotortest = RpiMotorLib.A4988Nema(direction, step, (21,21,21), "A4988")
-# mymotortest = RpiMotorLib
-# GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
+#mymotortest = RpiMotorLib.A4988Nema(direction, step, (21,21,21), "A4988")
+#GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
 
 ###########################
 # Actual motor control
 ###########################
 #
 # GPIO.output(EN_pin,GPIO.LOW) # pull enable to low to enable motor
-mymotortest.motor_go(False, # True=Clockwise, False=Counter-Clockwise
-                     "Full" , # Step type (Full,Half,1/4,1/8,1/16,1/32)
-                     200, # number of steps
-                     .0005, # step delay [sec]
-                     False, # True = print verbose output 
-                     .05) # initial delay [sec]
-GPIO.cleanup() # clear GPIO allocations after run
+# mymotortest.motor_go(False, # True=Clockwise, False=Counter-Clockwise
+#                      "Full" , # Step type (Full,Half,1/4,1/8,1/16,1/32)
+#                      200, # number of steps
+#                      .0005, # step delay [sec]
+#                      False, # True = print verbose output 
+#                      .05) # initial delay [sec]
+# GPIO.cleanup() # clear GPIO allocations after run
 
 '''
 step size : 
@@ -59,13 +58,23 @@ half = 400 ; 0.9°
 '''
 
 def makeStep(number_of_step, step_size):
+    global mymotortest
+    mymotortest = RpiMotorLib.A4988Nema(direction, step, (21,21,21), "A4988")
+    GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
+    print(f"making {number_of_step} steps")
     GPIO.output(EN_pin,GPIO.LOW) # pull enable to low to enable motor
-
-    mymotortest.motor_go(True, # True=Clockwise, False=Counter-Clockwise
-                     step_size , # Step type (Full,Half,1/4,1/8,1/16,1/32)
-                     number_of_step, # number of steps
+    mymotortest.motor_go(False, # True=Clockwise, False=Counter-Clockwise
+                     "Full" , # Step type (Full,Half,1/4,1/8,1/16,1/32)
+                     200, # number of steps
                      .0005, # step delay [sec]
                      False, # True = print verbose output 
                      .05) # initial delay [sec]
-    GPIO.output(EN_pin,GPIO.HIGH) # pull enable to low to enable motor
+
+    GPIO.cleanup() # clear GPIO allocations after run
+    
+
+
+def stopMotor():
+    mymotortest.motor_stop()
+    GPIO.cleanup()
  
