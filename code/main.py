@@ -12,7 +12,7 @@ class MainApp(App):
     
     def build(self):
         self.title = "SID alpha version 1.3"
-        Window.fullscreen = True
+        Window.fullscreen = False
         # build the screen manager
         sm = ScreenManager(transition=FadeTransition())
 
