@@ -6,12 +6,13 @@ from kivy.uix.label import Label
 from kivy.uix.slider import Slider
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.image import Image
-from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.popup import Popup
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
+from kivy.graphics.texture import Texture
 import sys
 import os
+import cv2 as cv
 sys.path.append(os.getcwd())
 # from raspberry.laser import *
 # from raspberry.stepper import *
@@ -26,6 +27,7 @@ class RunScreen(Screen):
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
         self.isPaused = False
         self.isLaserOn = False
+        self.isCamOn = False
 
         # set values from JSON TODO: create a json to save settings
         self.scale = 10
@@ -34,9 +36,30 @@ class RunScreen(Screen):
         self.resolution = "Low"
 
         self.addWidgets()
-        
-        
-        
+
+    def update_cam(self,dt):
+        ret, frame = self.capture.read()
+        hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+
+        b,g,r  = cv.split(frame)        
+        h,s,v = cv.split(hsv)
+
+        color = r
+        if self.colorSpace == "Saturation":
+            color = s
+        elif self.colorSpace =="Hue":
+            color = h
+        else:
+            color = r
+
+        buf1 = cv.flip(color, 0)
+        buf = buf1.tostring()
+        image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='luminance')
+        image_texture.blit_buffer(buf, colorfmt='luminance', bufferfmt='ubyte')
+        # display image from the texture
+        self.img1.texture = image_texture
+    
+
     def addWidgets(self):
         """
         Do : adds widgets to the page 
@@ -126,8 +149,11 @@ class RunScreen(Screen):
         paramGrid.add_widget(laserGrid)
 
         # Image widget
-        colorSpaceImg = Image(source='res/not_found.png')
-        paramGrid.add_widget(colorSpaceImg)
+
+        self.img1 = Image(source='res/not_found.png')
+        paramGrid.add_widget(self.img1)
+        # self.capture = cv.VideoCapture(0)
+        
 
         # Radio button color space + turn laser on/off
         laserAndColorGrid = GridLayout(cols=1,padding = (self.winSize[0]/50,self.winSize[1]/50),
@@ -148,11 +174,14 @@ class RunScreen(Screen):
                 check.bind(active=onCheckboxActiveChange)
                 colorGrid.add_widget(check)
 
-        laserButton = Button(text="Turn laser",font_size=24, background_color=self.BUTTON_COLOR, size_hint =(1,None))
+        laserButton = Button(text="Turn laser",font_size=24, background_color=self.BUTTON_COLOR)
         laserButton.bind(on_press=self.callback)
+        cameraButton = Button(text="Turn camera",font_size=24, background_color=self.BUTTON_COLOR)
+        cameraButton.bind(on_press=self.callback)
 
         laserAndColorGrid.add_widget(colorGrid)
         laserAndColorGrid.add_widget(laserButton)
+        laserAndColorGrid.add_widget(cameraButton)
         paramGrid.add_widget(laserAndColorGrid)
 
         # Grid layout: buttons in the bottom of the screen
@@ -237,19 +266,24 @@ class RunScreen(Screen):
         Params: instance = which object called the function
         """    
         name = instance.text
-        print(self.resolution,self.scale,self.colorSpace,self.laserPower)
+        # print(self.resolution,self.scale,self.colorSpace,self.laserPower)
+
+        def turnCamOff():
+            Clock.unschedule(self.camEvent)
+            self.capture.release()
+            self.isCamOn = False
+
         if name == "Back":
+            turnCamOff()
             self.manager.current = "Home"
         elif name == "Save":
             print("save current settings in json")
         elif name == "Run":
+            turnCamOff()
             self.showRunPopup()
             #TODO: uncomment
             # turnLaserOn()
             # runScan("testeee","test")
-        elif name =="Capture":
-            # TODO: call script to calibrate and save settings
-            print("calibrating")
         elif name =="Close":
             #TODO: uncomment
             # turnLaserOff()
@@ -276,6 +310,12 @@ class RunScreen(Screen):
             else:
                 self.isLaserOn = True
                 # turnLaserOn() #TODO: uncomment
-                
+        elif name =="Turn camera":
+            if self.isCamOn:
+                turnCamOff()
+            else:
+                self.capture = cv.VideoCapture(0)
+                self.camEvent = Clock.schedule_interval(self.update_cam, 1.0 / 33.0)
+                self.isCamOn = True       
         else:
             print('The button %s is not in the list of recognized buttons' % (instance))
