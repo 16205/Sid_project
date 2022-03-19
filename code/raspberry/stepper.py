@@ -41,7 +41,7 @@ Half = 2000 ; 0.18°
 '''
 
 def makeStep(number_of_step, step_size, doEnd = True):
-    print(f"making {number_of_step} steps at {step_size} size")
+    #print(f"making {number_of_step} steps at {step_size} size")
 
     GPIO.output(EN_pin,GPIO.LOW)        # pull enable to low to enable motor
     mymotortest.motor_go(False,         # True=Clockwise, False=Counter-Clockwise

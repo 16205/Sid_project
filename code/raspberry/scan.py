@@ -7,15 +7,17 @@ import os
 import pexpect
 from pexpect import pxssh
 import sys
-import sshTools
+#import sshTools
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
-import stepper
-import laser
-
+# import stepper
+# import laser
+import time
+from raspberry.stepper import *
+from raspberry.laser import *
 # reading the scan_name from the input
-scan_name = sys.argv[1]
-quality = sys.argv[2]
+# scan_name = sys.argv[1]
+# quality = sys.argv[2]
 
 def runScan(quality, laser_power = 30, color_space="Red", scale=10, scan_name = "test"):
     """
@@ -47,15 +49,15 @@ def runScan(quality, laser_power = 30, color_space="Red", scale=10, scan_name = 
         step_number = 10
         step_size = "Full"
         step_nbr = 100
-    elif quality == "low":
+    elif quality == "Low":
         step_number = 10
         step_size = "1/4"
         step_nbr = 400
-    elif quality == "medium":
+    elif quality == "Medium":
         step_number = 4
         step_size = "1/4"
         step_nbr = 1000
-    elif quality == "high":
+    elif quality == "High":
         step_number = 1
         step_size = "1/4"
         step_nbr = 4000
@@ -66,8 +68,8 @@ def runScan(quality, laser_power = 30, color_space="Red", scale=10, scan_name = 
     # print("folders created")
     
     # turn led On
-    laser.setDuty(laser_power)
-    laser.turnLaserOn()
+    setDuty(laser_power)
+    turnLaserOn()
 
     
     for i in range(step_nbr):
@@ -82,16 +84,18 @@ def runScan(quality, laser_power = 30, color_space="Red", scale=10, scan_name = 
         # print("im slave taken")
 
         # Run the stepper
-        stepper.makeStep(step_number,step_size, doEnd=False)
+        makeStep(step_number,step_size, doEnd=True)
+        time.sleep(.2)
 
     # turn laser off
-    laser.turnLaserOff()
+    turnLaserOff()
 
     # après la prise d'image on recup les images
-    for i in range(quality):
-        name_picture = scan_name+"_L_"+str(i)
-        sshTools.getPictureSlave(scan_name)
+    #for i in range(quality):
+        #name_picture = scan_name+"_L_"+str(i)
+        #sshTools.getPictureSlave(scan_name)
 
 
     GPIO.cleanup() # clear GPIO allocations after run
     
+#runScan("test")

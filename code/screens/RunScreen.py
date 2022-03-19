@@ -14,8 +14,8 @@ import sys
 import os
 import cv2 as cv
 sys.path.append(os.getcwd())
-# from raspberry.laser import *
-# from raspberry.scan import *
+from raspberry.laser import *
+from raspberry.scan import *
 
 class RunScreen(Screen):
     
@@ -128,7 +128,7 @@ class RunScreen(Screen):
         laserValueLabel = Label(text=f"{int(self.laserPower)}%")
         # sets the laser a duty at the start
         #TODO: uncomment
-        # setDuty(50)
+        setDuty(50)
 
         def OnSliderValueChange(instance,value):
             """
@@ -137,7 +137,7 @@ class RunScreen(Screen):
             laserValueLabel.text = f"{int(value)}%"
             self.laserPower = int(value)
             #TODO: uncomment
-            # setDuty(int(value))
+            setDuty(int(value))
         
         laserSlider.bind(value=OnSliderValueChange)
 
@@ -281,8 +281,8 @@ class RunScreen(Screen):
             turnCamOff()
             self.showRunPopup()
             #TODO: uncomment
-            # runScan(self.resolution, self.laserPower, self.colorSpace, self.scale)
-
+            runScan(self.resolution, self.laserPower, self.colorSpace, self.scale)
+            print("teste")
         elif name =="Close":
             #TODO: uncomment
             # stopMotor()
@@ -303,10 +303,10 @@ class RunScreen(Screen):
         elif name =="Turn laser":
             if self.isLaserOn == True:
                 self.isLaserOn = False
-                # turnLaserOff() #TODO: uncomment
+                turnLaserOff() #TODO: uncomment
             else:
                 self.isLaserOn = True
-                # turnLaserOn() #TODO: uncomment
+                turnLaserOn() #TODO: uncomment
         elif name =="Turn camera":
             if self.isCamOn:
                 turnCamOff()
