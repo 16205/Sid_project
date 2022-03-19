@@ -28,14 +28,15 @@ direction= 22 # Direction (DIR) GPIO Pin
 step = 23 # Step GPIO Pin
 EN_pin = 24 # enable pin (LOW to enable)
 
-mymotortest = RpiMotorLib.A4988Nema(direction, step, (21,21,21), "A4988")
+mymotortest = RpiMotorLib.A4988Nema(direction, step, (2,3,4), "A4988")
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
 
 '''
 step size : 
-full = 200 ; 1.8°
-half = 400 ; 0.9°
-1/4  = 800 ; 0.45°
+full = 1000 ; 0.36°
+half = 2000 ; 0.18°
+1/4  = 4000 ; 0.09°
 1/8 = 1600 ; 0.225°
 1/16 = 3200; 0.1125°
 '''
@@ -51,8 +52,7 @@ def makeStep(number_of_step, step_size, doEnd = True):
                         False,          # True = print verbose output 
                         .05)            # initial delay [sec]
     if doEnd:
-        GPIO.cleanup() # clear GPIO allocations after run
-    
+        GPIO.output(EN_pin,GPIO.HIGH)
 
 
 def stopMotor():
@@ -62,5 +62,5 @@ def stopMotor():
 
 
 # TO RUN INDEPENDENTLY
-# makeStep("Full",200)
+makeStep(4000,"1/4")
  
