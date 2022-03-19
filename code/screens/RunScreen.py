@@ -15,7 +15,6 @@ import os
 import cv2 as cv
 sys.path.append(os.getcwd())
 # from raspberry.laser import *
-# from raspberry.stepper import *
 # from raspberry.scan import *
 
 class RunScreen(Screen):
@@ -282,11 +281,10 @@ class RunScreen(Screen):
             turnCamOff()
             self.showRunPopup()
             #TODO: uncomment
-            # turnLaserOn()
-            # runScan("testeee","test")
+            # runScan(self.resolution, self.laserPower, self.colorSpace, self.scale)
+
         elif name =="Close":
             #TODO: uncomment
-            # turnLaserOff()
             # stopMotor()
             # TODO: save pictures in specific folder
             self.ids[str("runPopup")].dismiss()
@@ -294,7 +292,6 @@ class RunScreen(Screen):
         elif name =="Cancel":
             # TODO: delete pictures that were just taken
             #TODO: uncomment
-            # turnLaserOff()
             # stopMotor()
             self.progress.cancel()
         elif name =="Pause":
