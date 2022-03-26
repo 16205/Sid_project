@@ -6,15 +6,15 @@ from kivy.uix.label import Label
 from kivy.uix.slider import Slider
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.image import Image
-from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.popup import Popup
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
+from kivy.graphics.texture import Texture
 import sys
 import os
+import cv2 as cv
 sys.path.append(os.getcwd())
 from raspberry.laser import *
-# from raspberry.stepper import *
 from raspberry.scan import *
 
 class RunScreen(Screen):
@@ -26,33 +26,76 @@ class RunScreen(Screen):
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
         self.isPaused = False
         self.isLaserOn = False
+        self.isCamOn = False
+
+        # set values from JSON TODO: create a json to save settings
+        self.scale = 10
+        self.laserPower = 30
+        self.colorSpace = "Saturation"
+        self.resolution = "Low"
 
         self.addWidgets()
-        
+
+    def update_cam(self,dt):
+        ret, frame = self.capture.read()
+        hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+
+        b,g,r  = cv.split(frame)        
+        h,s,v = cv.split(hsv)
+
+        color = r
+        if self.colorSpace == "Saturation":
+            color = s
+        elif self.colorSpace =="Hue":
+            color = h
+        else:
+            color = r
+
+        buf1 = cv.flip(color, 0)
+        buf = buf1.tostring()
+        image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='luminance')
+        image_texture.blit_buffer(buf, colorfmt='luminance', bufferfmt='ubyte')
+        # display image from the texture
+        self.img1.texture = image_texture
+    
+
     def addWidgets(self):
         """
         Do : adds widgets to the page 
         """
         widgetHeight = self.winSize[1]/7
+
+        # when a checkbox value changes
+        def onCheckboxActiveChange(instance,value):
+            if value:
+                if instance.group =="col":
+                    self.colorSpace = list(instance.ids.values())[0]
+                elif instance.group == "res":
+                    self.resolution = list(instance.ids.values())[0]
+                else:
+                    print("Error getting the group")
                 
         # Grid containing the parameters
         paramGrid = GridLayout(cols=2)
         self.ids['paramGrid'] = paramGrid
 
         # Resolution widgets : label and radiobuttons
-        resolutionLabel = Label(text="Resolution",size_hint_y=None, height=widgetHeight)        
+        resolutionLabel = Label(text="Resolution",size_hint_y=None, height=widgetHeight)   
+        resWidget = [Label(text="Low"),Label(text="Medium"),Label(text="High")]   
+        resolutionGrid = GridLayout(cols=3,size_hint_y=None, height=widgetHeight)  
 
-        resWidget = []
-        resWidget.append(Label(text="Low"))
-        resWidget.append(Label(text="Medium"))
-        resWidget.append(Label(text="High"))
-        resWidget.append(CheckBox(group='res', allow_no_selection=False))
-        resWidget.append(CheckBox(group='res', active=True, allow_no_selection=False))
-        resWidget.append(CheckBox(group='res', allow_no_selection=False))
-
-        resolutionGrid = GridLayout(cols=3,size_hint_y=None, height=widgetHeight)
-        for item in resWidget:
-            resolutionGrid.add_widget(item)
+        resIndex = 0
+        for i in range(6):
+            if i < 3:
+                resolutionGrid.add_widget(resWidget[i])
+                if self.resolution == resWidget[i].text:
+                    resIndex = i + 3
+            else:
+                check = CheckBox(group='res', allow_no_selection=False, ids={i-3:resWidget[i-3].text})
+                if resIndex == i:
+                    check.active = True
+                check.bind(active=onCheckboxActiveChange)
+                resolutionGrid.add_widget(check)
 
         paramGrid.add_widget(resolutionLabel)
         paramGrid.add_widget(resolutionGrid)
@@ -60,14 +103,16 @@ class RunScreen(Screen):
 
         # Scale widgets : label and slider
         scaleLabel = Label(text="Scale",size_hint_y=None, height=widgetHeight)
-        scaleSlider = Slider(min=5, max=20, value=10, step = 5,value_track=True,value_track_color=[1, 1, 0, 1])
-        scaleValueLabel = Label(text="10x10x10 cm")
+        scaleSlider = Slider(min=5, max=20, value=self.scale, step = 5,value_track=True,value_track_color=[1, 1, 0, 1])
+        scaleValueLabel = Label(text=f"{self.scale}x{self.scale}x{self.scale} cm")
+        
 
         def OnSliderValueChange(instance,value):
             """
             Do: updates the value of the scale
             """
             scaleValueLabel.text = f"{value}x{value}x{value} cm"
+            self.scale = value
         
         scaleSlider.bind(value=OnSliderValueChange)
 
@@ -79,9 +124,10 @@ class RunScreen(Screen):
 
         # Laser power widget : label and slider
         laserLabel = Label(text="Laser power",size_hint_y=None, height=widgetHeight)
-        laserSlider = Slider(min=0, max=100, value=50, step = 10,value_track=True,value_track_color=[1, 1, 0, 1])
-        laserValueLabel = Label(text="50%")
+        laserSlider = Slider(min=0, max=100, value=self.laserPower, step = 10,value_track=True,value_track_color=[1, 1, 0, 1])
+        laserValueLabel = Label(text=f"{int(self.laserPower)}%")
         # sets the laser a duty at the start
+        #TODO: uncomment
         setDuty(50)
 
         def OnSliderValueChange(instance,value):
@@ -89,6 +135,8 @@ class RunScreen(Screen):
             Do: updates the value of the laser
             """
             laserValueLabel.text = f"{int(value)}%"
+            self.laserPower = int(value)
+            #TODO: uncomment
             setDuty(int(value))
         
         laserSlider.bind(value=OnSliderValueChange)
@@ -99,12 +147,47 @@ class RunScreen(Screen):
         paramGrid.add_widget(laserLabel)
         paramGrid.add_widget(laserGrid)
 
+        # Image widget
+
+        self.img1 = Image(source='res/not_found.png')
+        paramGrid.add_widget(self.img1)
+        # self.capture = cv.VideoCapture(0)
+        
+
+        # Radio button color space + turn laser on/off
+        laserAndColorGrid = GridLayout(cols=1,padding = (self.winSize[0]/50,self.winSize[1]/50),
+                            spacing=(self.winSize[0]/100,self.winSize[1]/100))
+        # color space grid for radiobuttons
+        colorGrid = GridLayout(cols=3,size_hint_y=None, height=widgetHeight)
+        colorWidget = [Label(text="Saturation"),Label(text="Hue"),Label(text="Red")]
+        colIndex = 0
+        for i in range(6):
+            if i < 3:
+                colorGrid.add_widget(colorWidget[i])
+                if self.colorSpace == colorWidget[i].text:
+                    colIndex = i + 3
+            else:
+                check = CheckBox(group='col', allow_no_selection=False, ids={i-3:colorWidget[i-3].text})
+                if i == colIndex:
+                    check.active = True
+                check.bind(active=onCheckboxActiveChange)
+                colorGrid.add_widget(check)
+
+        laserButton = Button(text="Turn laser",font_size=24, background_color=self.BUTTON_COLOR)
+        laserButton.bind(on_press=self.callback)
+        cameraButton = Button(text="Turn camera",font_size=24, background_color=self.BUTTON_COLOR)
+        cameraButton.bind(on_press=self.callback)
+
+        laserAndColorGrid.add_widget(colorGrid)
+        laserAndColorGrid.add_widget(laserButton)
+        laserAndColorGrid.add_widget(cameraButton)
+        paramGrid.add_widget(laserAndColorGrid)
 
         # Grid layout: buttons in the bottom of the screen
         bottomGrid = GridLayout(rows=1,padding = (self.winSize[0]/50,self.winSize[1]/50), 
                                 spacing=(self.winSize[0]/50,self.winSize[1]/50),
                                 size_hint_y=None, height=self.winSize[1]/5)
-        namesList = ["Back","Calibrate","Run"]
+        namesList = ["Back","Save","Run"]
 
         for i in range (len(namesList)):
             btn = Button(text=namesList[i], font_size=24, background_color=self.BUTTON_COLOR)
@@ -117,43 +200,7 @@ class RunScreen(Screen):
         # Adding all the layouts to the page
         pageGrid.add_widget(paramGrid)
         pageGrid.add_widget(bottomGrid)
-        self.add_widget(pageGrid)
-
-    def showCalibration(self):
-        """
-        Do: activates the cameras to calibrate with a chessboard
-        """
-        # TODO: import camera image
-        calibImg = Image(source='res/not_found.png')
-        self.ids['calibImg'] = calibImg
-
-        # anchor = AnchorLayout(anchor_x='center', anchor_y='center')
-        # self.ids["anchor"] = anchor
-        grid = GridLayout(cols=1,padding = (self.winSize[0]/50,self.winSize[1]/50),
-                            spacing=(self.winSize[0]/100,self.winSize[1]/100))
-
-        button = Button(text="Capture",font_size=24, background_color=self.BUTTON_COLOR, size_hint =(1,None))
-        button.bind(on_press=self.callback)
-        self.ids['captureButton'] = button
-        grid.add_widget(button)
-
-        laserButton = Button(text="Turn laser",font_size=24, background_color=self.BUTTON_COLOR, size_hint =(1,None))
-        laserButton.bind(on_press=self.callback)
-        grid.add_widget(laserButton)
-
-        self.ids[str("paramGrid")].add_widget(calibImg)
-        self.ids[str("paramGrid")].add_widget(grid)
-        
-    def hideCalibration(self):
-        """
-        Do: delete the elements to hide the camera calibration widgets
-        """
-        try:
-            self.ids["paramGrid"].remove_widget(self.ids["calibImg"])
-            self.ids["anchor"].remove_widget(self.ids["captureButton"])
-            self.ids["paramGrid"].remove_widget(self.ids["anchor"])
-        except:
-            pass
+        self.add_widget(pageGrid)   
     
     def showRunPopup(self):
         """
@@ -218,34 +265,33 @@ class RunScreen(Screen):
         Params: instance = which object called the function
         """    
         name = instance.text
-        
+        # print(self.resolution,self.scale,self.colorSpace,self.laserPower)
+
+        def turnCamOff():
+            Clock.unschedule(self.camEvent)
+            self.capture.release()
+            self.isCamOn = False
 
         if name == "Back":
-            self.hideCalibration()
+            turnCamOff()
             self.manager.current = "Home"
-        elif name == "Calibrate":
-            if any(isinstance(c, AnchorLayout) for c in list(self.ids["paramGrid"].children)):
-                self.hideCalibration()
-            else:
-                self.showCalibration()
+        elif name == "Save":
+            print("save current settings in json")
         elif name == "Run":
+            turnCamOff()
             self.showRunPopup()
-            
-            turnLaserOn()
-            runScan("testeee","test")
-            # TODO: call script to scan the whole
-        elif name =="Capture":
-            # TODO: call script to calibrate and save settings
-            print("calibrating")
+            #TODO: uncomment
+            runScan(self.resolution, self.laserPower, self.colorSpace, self.scale)
+            print("teste")
         elif name =="Close":
-            turnLaserOff()
+            #TODO: uncomment
             # stopMotor()
             # TODO: save pictures in specific folder
             self.ids[str("runPopup")].dismiss()
             self.progress.cancel()
         elif name =="Cancel":
             # TODO: delete pictures that were just taken
-            turnLaserOff()
+            #TODO: uncomment
             # stopMotor()
             self.progress.cancel()
         elif name =="Pause":
@@ -257,10 +303,16 @@ class RunScreen(Screen):
         elif name =="Turn laser":
             if self.isLaserOn == True:
                 self.isLaserOn = False
-                turnLaserOff()
+                turnLaserOff() #TODO: uncomment
             else:
                 self.isLaserOn = True
-                turnLaserOn()
-                
+                turnLaserOn() #TODO: uncomment
+        elif name =="Turn camera":
+            if self.isCamOn:
+                turnCamOff()
+            else:
+                self.capture = cv.VideoCapture(0)
+                self.camEvent = Clock.schedule_interval(self.update_cam, 1.0 / 33.0)
+                self.isCamOn = True       
         else:
             print('The button %s is not in the list of recognized buttons' % (instance))

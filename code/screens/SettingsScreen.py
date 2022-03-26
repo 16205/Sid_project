@@ -66,6 +66,8 @@ class SettingsScreen(Screen):
         pageGrid.add_widget(bottomGrid)
         self.add_widget(pageGrid)
 
+        self.addCalibration()
+
         """
         TODO: 
             - add radio buton to select 3D object file to convert to (.obj only?)
@@ -73,6 +75,26 @@ class SettingsScreen(Screen):
                 - usb
                 - wifi / scp / SSH => add apearing button to establish ssh connection or stg
         """
+    def addCalibration(self):
+        """
+        Do: activates the cameras to calibrate with a chessboard
+        """
+        # TODO: import camera image
+        calibImg = Image(source='res/not_found.png')
+        self.ids['calibImg'] = calibImg
+
+        # anchor = AnchorLayout(anchor_x='center', anchor_y='center')
+        # self.ids["anchor"] = anchor
+        grid = GridLayout(cols=1,padding = (self.winSize[0]/50,self.winSize[1]/50),
+                            spacing=(self.winSize[0]/100,self.winSize[1]/100))
+
+        button = Button(text="Capture",font_size=24, background_color=self.BUTTON_COLOR, size_hint =(1,None))
+        button.bind(on_press=self.callback)
+        self.ids['captureButton'] = button
+        grid.add_widget(button)
+
+        self.ids[str("settingsGrid")].add_widget(calibImg)
+        self.ids[str("settingsGrid")].add_widget(grid)
 
     def callback(self, instance):        
         name = instance.text
@@ -87,5 +109,7 @@ class SettingsScreen(Screen):
             print('configure master camera')
         elif name == "Slave":
             print('configure slave camera')
+        elif name =="Capture":
+            print("calibrating")
         else:
             print('The button %s is not in the list of recognized buttons' % (instance))
