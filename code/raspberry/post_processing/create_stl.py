@@ -6,6 +6,11 @@ import json
 
 """
 https://stackoverflow.com/questions/60066405/create-a-stl-file-from-a-collection-of-points
+https://www.google.com/search?q=create+stl+file+from+3D+points&client=firefox-b-d&sxsrf=APq-WBtNJQR-aHtoFrPQ1u-YXHlYW6KtoA%3A1648658438709&ei=BohEYtfhKpr-sAfSo7vYCA&ved=0ahUKEwjX_OCko-72AhUaP-wKHdLRDosQ4dUDCA0&uact=5&oq=create+stl+file+from+3D+points&gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsANKBAhBGABKBAhGGABQ0w1YlBhg6hpoAnABeACAAVKIAakCkgEBNJgBAKABAcgBCMABAQ&sclient=gws-wiz
+
+other idea:
+        - create XYZ file from 3D coordinates
+        - then convert to stl file
 
 STEPS : v get xyz coordinates
         v put it in an array of points with dtype mesh
