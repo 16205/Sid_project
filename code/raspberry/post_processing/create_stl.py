@@ -3,9 +3,8 @@ import numpy as np
 import json
 
 """
+source :
 https://stackoverflow.com/questions/60066405/create-a-stl-file-from-a-collection-of-points
-https://www.google.com/search?q=create+stl+file+from+3D+points&client=firefox-b-d&sxsrf=APq-WBtNJQR-aHtoFrPQ1u-YXHlYW6KtoA%3A1648658438709&ei=BohEYtfhKpr-sAfSo7vYCA&ved=0ahUKEwjX_OCko-72AhUaP-wKHdLRDosQ4dUDCA0&uact=5&oq=create+stl+file+from+3D+points&gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsANKBAhBGABKBAhGGABQ0w1YlBhg6hpoAnABeACAAVKIAakCkgEBNJgBAKABAcgBCMABAQ&sclient=gws-wiz
-
 
 STEPS : 
     - import xyz points
@@ -18,6 +17,12 @@ STEPS :
 """
 
 def create_stl(columns):
+    """
+    Function to transform an array of xyz points vertices and faces.\n
+    Parameters : columns corresponds to the number of slices the scanner did
+    or the number of steps\n
+    Returns : (vertices, faces), both are arrays    
+    """
     # create vertices (or points)
     with open('code/raspberry/post_processing/cylinder.json') as json_file:
         data = json.load(json_file)
@@ -62,6 +67,10 @@ def create_stl(columns):
 
 
 def create_mesh(vertices, faces):
+    """
+    Function to transform vertices and faces into a 3D mesh.\n
+    Output : creates a 3D stl file from the mesh.
+    """
     new_stl = mesh.Mesh(np.zeros(faces.shape[0], dtype=mesh.Mesh.dtype))
     for i, f in enumerate(faces):
         for j in range(3):
@@ -71,5 +80,5 @@ def create_mesh(vertices, faces):
     new_stl.save('code/raspberry/post_processing/new_stl.stl')
 
 # do
-vertices, faces = create_stl(12)
+vertices, faces = create_stl(42)
 create_mesh(vertices, faces)

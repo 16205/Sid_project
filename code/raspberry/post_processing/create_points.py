@@ -1,33 +1,39 @@
-import matplotlib.pyplot as plt
 import numpy as np
-import random
-from mpl_toolkits.mplot3d import axes3d
 import json
 import math
 
-def create_sphere():
+"""
+File to create dummy json files with xyz points in an array
+"""
+
+def create_sphere(columns=42, rows = 8):
     x = []
     y = []
     z = []
-    for i in range(2000):
-        u = np.random.normal(0,1)
-        v = np.random.normal(0,1)
-        w = np.random.normal(0,1)
-        norm = (u*u + v*v + w*w)**(0.5)
-        xi,yi,zi = u/norm,v/norm,w/norm
-        x.append(xi)
-        y.append(yi)
-        z.append(zi)
 
+    colAngle = 360/columns
+    rowAngle = 180/rows
+    semirows = int(rows/2)
+
+    for i in range(columns):
+        alpha = math.radians(colAngle * i)
+        for j in range(-semirows,semirows):
+            beta = math.radians(rowAngle * j)
+        
+            x.append(math.cos(alpha)* math.cos(beta))
+            y.append(math.sin(alpha)* math.cos(beta))
+            z.append(math.sin(beta))
     
     coords = []
     for i in range(len(x)):
         coords.append([x[i],y[i],z[i]])
-    
-    # create file
-    with open('code/raspberry/post_processing/json_data.json', 'w') as outfile:
+
+    with open('code/raspberry/post_processing/sphere.json', 'w') as outfile:
         json.dump(coords, outfile)
 
+    return x,y,z
+
+# create_sphere(42,34)
 
 
 def create_cube():
@@ -40,14 +46,14 @@ def create_cube():
         coords.append([x[i],y[i],z[i]])
     
     # create file
-    with open('code/raspberry/post_processing/json_cube.json', 'w') as outfile:
+    with open('code/raspberry/post_processing/cube.json', 'w') as outfile:
         json.dump(coords, outfile)
 
     return x,y,z
 
 # x,y,z = create_cube()
 
-def create_cylinder(columns=3):
+def create_cylinder(columns=3, rows = 3):
     x = []
     y = []
     z = []
@@ -56,8 +62,8 @@ def create_cylinder(columns=3):
 
     for i in range(columns):
         alpha = math.radians(angle * i)
-        for j in range(3):
-        
+
+        for j in range(rows):        
             x.append(math.cos(alpha))
             y.append(math.sin(alpha))
             z.append(j)
@@ -70,12 +76,4 @@ def create_cylinder(columns=3):
         json.dump(coords, outfile)
 
     return x,y,z
-x,y,z = create_cylinder(12)
-
-# plot
-
-# fig, ax = plt.subplots(1, 1, subplot_kw={'projection':'3d'})
-# #ax.plot_wireframe(x, y, z, color='k', rstride=1, cstride=1)
-# ax.scatter(x, y, z, s=100, c='r', zorder=10)
-# ax.set_title('Example of a uniformly sampled sphere', fontdict={'fontsize':20})
-# plt.show()
+x,y,z = create_cylinder(42,4)
