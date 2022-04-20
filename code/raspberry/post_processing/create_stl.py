@@ -10,7 +10,7 @@ def create_stl(columns):
     Returns : (vertices, faces), both are arrays    
     """
     # create vertices (or points)
-    with open('code/raspberry/post_processing/sphere.json') as json_file:
+    with open('code/raspberry/post_processing/sablier.json') as json_file:
         data = json.load(json_file)
     vertices = np.array(data)
 
@@ -98,5 +98,5 @@ def create_mesh(vertices, faces):
     new_stl.save('code/raspberry/post_processing/new_stl.stl')
 
 # do
-vertices, faces = create_stl(42)
+vertices, faces = create_stl(6)
 create_mesh(vertices, faces)

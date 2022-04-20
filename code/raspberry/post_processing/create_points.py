@@ -6,6 +6,22 @@ import math
 File to create dummy json files with xyz points in an array
 """
 
+def create_sablier():
+    x = [0,0,1,1,       2,2,2,2, 1,1,0,0]
+    y = [0,0,1,1,       0,0,2,2, 1,1,2,2]
+    z = [0,2,0,2,       0,2,0,2, 0,2,0,2]
+
+    coords = []
+    for i in range(len(x)):
+        coords.append([x[i],y[i],z[i]])
+    
+    # create file
+    with open('code/raspberry/post_processing/sablier.json', 'w') as outfile:
+        json.dump(coords, outfile)
+
+    return x,y,z
+create_sablier()
+
 def create_sphere(columns=42, rows = 8):
     x = []
     y = []
@@ -33,7 +49,7 @@ def create_sphere(columns=42, rows = 8):
 
     return x,y,z
 
-create_sphere(42,12)
+# create_sphere(42,12)
 
 
 def create_cube():
