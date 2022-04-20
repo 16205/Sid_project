@@ -33,7 +33,7 @@ def create_sphere(columns=42, rows = 8):
 
     return x,y,z
 
-# create_sphere(42,34)
+create_sphere(42,12)
 
 
 def create_cube():
@@ -76,4 +76,4 @@ def create_cylinder(columns=3, rows = 3):
         json.dump(coords, outfile)
 
     return x,y,z
-x,y,z = create_cylinder(42,4)
+# x,y,z = create_cylinder(42,4)
