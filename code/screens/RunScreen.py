@@ -268,9 +268,12 @@ class RunScreen(Screen):
         # print(self.resolution,self.scale,self.colorSpace,self.laserPower)
 
         def turnCamOff():
-            Clock.unschedule(self.camEvent)
-            self.capture.release()
-            self.isCamOn = False
+            try:
+                Clock.unschedule(self.camEvent)
+                self.capture.release()
+                self.isCamOn = False
+            except:
+                print("no cam event")
 
         if name == "Back":
             turnCamOff()
