@@ -9,11 +9,11 @@ import sshTools
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
 import time
-import jsonTools as jt
-import red_pixs as rp
-from msilib.schema import Directory
-from raspberry.stepper import *
-from raspberry.laser import *
+# import jsonTools as jt
+# import red_pixs as rp
+# from msilib.schema import Directory
+from stepper import *
+from laser import *
 # reading the scan_name from the input
 # scan_name = sys.argv[1]
 # quality = sys.argv[2]
@@ -76,10 +76,13 @@ def runScan(quality, laser_power = 30, color_space="Red", scale=10, scan_name = 
         print("im slave taken")
 
         # Run the stepper
+        time.sleep(4)
         makeStep(step_number,step_size, doEnd=True)
-        time.sleep(2)
+        time.sleep(0.2)
+        
+    for i in range(1, step_nbr):
         #on recup l'image qu'on vient de prendre
-        sshTools.getPictureSlave(scan_name, name_picture_l)
+        sshTools.getPictureSlave(scan_name, scan_name+"_L_"+str(i) )
         time.sleep(2)
         
     # turn laser off
