@@ -14,6 +14,7 @@ import time
 # from msilib.schema import Directory
 from stepper import *
 from laser import *
+from copy_slave_pics import *
 # reading the scan_name from the input
 # scan_name = sys.argv[1]
 # quality = sys.argv[2]
@@ -71,20 +72,34 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
         print("name_picture_r = ", name_picture_r)
         print("name_picture_l = ", name_picture_l)
 
+        # TODO: put the pictures inside /home/pi/Sid_project/scans/{scan_name}
         os.system('python3 prise_image_bon.py '+scan_name+' '+name_picture_r) #on pose que le master sera la camera de droite
         print("im master taken")
-        sshTools.takePictureWithSlave(scan_name, name_picture_l)
-        print("im slave taken")
+
+
+        # take picture on the slave
+        try:
+            # TODO: put the pictures inside /mnt/home/pi/scans/{scan_name}
+            os.system('python3 /mnt/home/pi/prise_image_bon.py '+scan_name+' '+name_picture_l)
+            # sshTools.takePictureWithSlave(scan_name, name_picture_l)
+            print("im slave taken")
+        except os.system.error as e:
+            print(str(e))
+        
 
         # Run the stepper
         time.sleep(5)
         makeStep(step_number,step_size, doEnd=True)
         time.sleep(0.2)
+
+        # copy slave images into the master scan folder
+        copy_slave_pics(scan_name)
         
-    for i in range(1, step_nbr):
-        #on recup l'image qu'on vient de prendre
-        sshTools.getPictureSlave(scan_name, scan_name+"_L_"+str(i) )
-        time.sleep(2)
+        # for i in range(1, step_nbr):
+        #     #on recup l'image qu'on vient de prendre
+
+        #     sshTools.getPictureSlave(scan_name, scan_name+"_L_"+str(i) )
+        #     time.sleep(2)
         
     # turn laser off
     turnLaserOff()
