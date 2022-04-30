@@ -47,7 +47,7 @@ def makeStep(number_of_step, step_size, doEnd = True):
     mymotortest.motor_go(False,         # True=Clockwise, False=Counter-Clockwise
                         step_size ,     # Step type (Full,Half,1/4,1/8,1/16,1/32)
                         number_of_step, # number of steps
-                        .05,            # step delay [sec]
+                        .1,            # step delay [sec]
                         False,          # True = print verbose output 
                         .05)            # initial delay [sec]
     if doEnd:
@@ -61,5 +61,6 @@ def stopMotor():
 
 
 # TO RUN INDEPENDENTLY
-# makeStep(4000,"1/4")
+#
+#makeStep(4000,"1/4")
  

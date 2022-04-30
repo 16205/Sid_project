@@ -18,7 +18,7 @@ from laser import *
 # scan_name = sys.argv[1]
 # quality = sys.argv[2]
 
-def runScan(quality, laser_power = 30, color_space="Red", scale=10, scan_name = "test"):
+def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = "test"):
     """
     Run the scan : activate stepper and take pictures\n
     Params:\n
@@ -63,6 +63,7 @@ def runScan(quality, laser_power = 30, color_space="Red", scale=10, scan_name = 
     turnLaserOn()
 
     for i in range(1, step_nbr):
+        print(i)
 
         name_picture_r = scan_name +"_R_"+str(i) # create the file name for the i th picture from the rigth camera
         name_picture_l = scan_name+"_L_"+str(i)  # create the filename for the i th picture from the left camera
@@ -76,7 +77,7 @@ def runScan(quality, laser_power = 30, color_space="Red", scale=10, scan_name = 
         print("im slave taken")
 
         # Run the stepper
-        time.sleep(4)
+        time.sleep(5)
         makeStep(step_number,step_size, doEnd=True)
         time.sleep(0.2)
         
@@ -93,7 +94,7 @@ def runScan(quality, laser_power = 30, color_space="Red", scale=10, scan_name = 
 
     GPIO.cleanup() # clear GPIO allocations after run
     
-#runScan("test")
+runScan("test")
 
 def scan2json(scan_name):
     jt.build_Json4scan(scan_name)
