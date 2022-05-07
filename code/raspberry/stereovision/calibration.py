@@ -92,14 +92,14 @@ def captureCalibPics():
     # Timer display in terminal
     for remaining in range(10, 0, -1):
         sys.stdout.write("\r")
-        sys.stdout.write("1st capture in {:2d} seconds".format(remaining)) 
+        sys.stdout.write("2nd capture in {:2d} seconds".format(remaining)) 
         sys.stdout.flush()
         time.sleep(1)
         
     # Capture c2Right.jpg from Master camera
     camera.capture(rawCapture, format='bgr')
     img = rawCapture.array
-    cv2.imwrite('calibration/c1Right.jpg', img)
+    cv2.imwrite('calibration/c2Right.jpg', img)
     
     # TODO: implement Capture c2Left.jpg from Slave camera
     
