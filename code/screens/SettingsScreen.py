@@ -19,7 +19,7 @@ import numpy as np
 
 from functools import partial
 from raspberry.stereovision.calibration import calibration
-import raspberry.client
+# import raspberry.client
 
 class SettingsScreen(Screen):
     def __init__(self, **kwargs):
