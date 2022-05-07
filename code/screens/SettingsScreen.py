@@ -14,8 +14,12 @@ from kivy.uix.image import Image
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.popup import Popup
 import cv2 as cv
+import subprocess
+import numpy as np
+
 from functools import partial
 from raspberry.stereovision.calibration import calibration
+import raspberry.client
 
 class SettingsScreen(Screen):
     def __init__(self, **kwargs):
@@ -25,6 +29,7 @@ class SettingsScreen(Screen):
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
         self.isMasterCamOn = False
         self.isSlaveCamOn = False
+        self.FFMPEG_BIN = '/usr/bin/ffmpeg'
 
         # _____________the whole page_____________
         pageGrid = BoxLayout(orientation= 'vertical')
@@ -101,7 +106,7 @@ class SettingsScreen(Screen):
 
     def update_cam(self,dt,which="Master"):
         if which=="Slave":
-            ret, frame = self.captureSlave.read()
+            frame = self.captureSlave
         else:
             ret, frame = self.captureMaster.read()
 
@@ -139,12 +144,49 @@ class SettingsScreen(Screen):
                 except:
                     print("error with Master camera")
 
+        def run_ffmpeg():
+            ffmpg_cmd = [
+                self.FFMPEG_BIN,
+                '-i', 'tcp://pislave:5000/',
+                '-video_size', '1296x972',
+                '-pix_fmt', 'bgr24',        # opencv requires bgr24 pixel format
+                '-vcodec', 'rawvideo',
+                '-an','-sn',                # disable audio processing
+                '-f', 'image2pipe',
+                '-',                        # output to go to stdout
+            ]
+            return subprocess.Popen(ffmpg_cmd, stdout = subprocess.PIPE, bufsize=10**8)
+
+        def run_cv_window(process,dt):
+            # while True:
+                 # read frame-by-frame
+            raw_image = process.stdout.read(1296*972*3)
+            if raw_image == b'':
+                raise RuntimeError("Empty pipe")
+            
+            # transform the bytes read into a numpy array
+            frame =  np.frombuffer(raw_image, dtype='uint8')
+            frame = frame.reshape((972,1296,3)) # height, width, channels
+            if frame is not None:
+                self.captureSlave = frame
+                self.update_cam(0,which="Slave")
+                
+            #     cv.imshow('Video', frame)
+            
+            if self.isSlaveCamOn == False:
+                process.stdout.flush()
+                
+                cv.destroyAllWindows()
+                process.terminate()
+                print(process.poll())
+
         def turnCamOn(which):
             if which== "Slave":
                 try:
-                    self.captureSlave = cv.VideoCapture(0) #TODO: get the second camera output feed
-                    self.camEventSlave = Clock.schedule_interval(partial(self.update_cam,which="Slave"),1/33.0)
                     self.isSlaveCamOn = True  
+                    ffmpeg_process = run_ffmpeg()
+                    self.camEventSlave = Clock.schedule_interval(partial(run_cv_window,ffmpeg_process),1/33.0)
+
                 except:
                     print("Slave cam is not connected")
             else:
