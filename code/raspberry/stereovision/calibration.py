@@ -66,6 +66,10 @@ def captureCalibPics():
     # Camera init
     camera = PiCamera()
     rawCapture = PiRGBArray(camera)
+
+    # get the slave video feed
+    slave_cam = cv2.VideoCapture("rtsp://pislave.local:8080/",cv2.CAP_FFMPEG)
+    slave_cam.set(cv2.CAP_PROP_BUFFERSIZE, 10) # 10 pics in the buffer
     
     # 1st prompt
     print("Please place the chessboard in both camera's views, and do not move it until next prompt.")
@@ -81,8 +85,14 @@ def captureCalibPics():
     camera.capture(rawCapture, format='bgr')
     img = rawCapture.array
     cv2.imwrite('./raspberry/stereovision/calibration/c1Right.jpg', img)
+
+    # Capture slave
+    ret, frame = slave_cam.read()
+    while True:
+        if ret == True:
+            cv2.imwrite('./raspberry/stereovision/calibration/c1Left.jpg', frame)
+            break
     
-    # TODO: implement Capture c1Left.jpg from Slave camera
     
     sys.stdout.write("\rFirst step complete!         \n")
     
@@ -100,8 +110,14 @@ def captureCalibPics():
     camera.capture(rawCapture, format='bgr')
     img = rawCapture.array
     cv2.imwrite('./raspberry/stereovision/calibration/c2Right.jpg', img)
+
+    # Capture slave
+    ret, frame = slave_cam.read()
+    while True:
+        if ret == True:
+            cv2.imwrite('./raspberry/stereovision/calibration/c2Left.jpg', frame)
+            break
     
-    # TODO: implement Capture c2Left.jpg from Slave camera
-    
+    slave_cam.release()
     # 3rd prompt
     print("The image capture for the calibration is now complete, please wait until calibration is finished.")
