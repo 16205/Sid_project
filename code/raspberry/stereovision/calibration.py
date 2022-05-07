@@ -80,11 +80,11 @@ def captureCalibPics():
     # Capture c1Right.jpg from Master camera
     camera.capture(rawCapture, format='bgr')
     img = rawCapture.array
-    cv2.imwrite('calibration/c1Right.jpg', img)
+    cv2.imwrite('./raspberry/stereovision/calibration/c1Right.jpg', img)
     
     # TODO: implement Capture c1Left.jpg from Slave camera
     
-    sys.stdout.write("\rFirst step complete!\n")
+    sys.stdout.write("\rFirst step complete!         \n")
     
     # 2nd prompt 
     print("Please move the chessboard slightly by changing its perspective, without rotating it around its normal vector, and do not move it until next prompt.")
@@ -99,7 +99,7 @@ def captureCalibPics():
     # Capture c2Right.jpg from Master camera
     camera.capture(rawCapture, format='bgr')
     img = rawCapture.array
-    cv2.imwrite('calibration/c2Right.jpg', img)
+    cv2.imwrite('./raspberry/stereovision/calibration/c2Right.jpg', img)
     
     # TODO: implement Capture c2Left.jpg from Slave camera
     
