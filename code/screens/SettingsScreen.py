@@ -15,6 +15,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.popup import Popup
 import cv2 as cv
 import numpy as np
+import os
 
 from functools import partial
 from raspberry.stereovision.calibration import calibration
@@ -104,16 +105,20 @@ class SettingsScreen(Screen):
 
     def update_cam(self,dt,which="Master"):
         if which=="Slave":
-            # ret, frame = self.captureSlave.read()
-            self.captureSlave.grab()
-            ret, frame = self.captureSlave.retrieve()
+            ret, frame = self.captureSlave.read()
+            #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            #self.captureSlave.grab()
+            #ret, frame = self.captureSlave.retrieve()
         else:
             ret, frame = self.captureMaster.read()
 
         # convert it to texture
         buf1 = cv.flip(frame, 0)
         buf = buf1.tostring()
-        texture1 = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr') 
+        try:
+            texture1 = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+        except:
+            texture1 = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgra')
 
         #if working on RASPBERRY PI, use colorfmt='rgba' here instead, but stick with "bgr" in blit_buffer. 
         texture1.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
@@ -147,11 +152,15 @@ class SettingsScreen(Screen):
 
         def turnCamOn(which):
             if which== "Slave":
+                
                 try:
                     
                     # ffmpeg_process = run_ffmpeg()
-                    self.captureSlave = cv.VideoCapture('tcp://pislave:5000')
-                    self.captureSlave.set(cv.CAP_PROP_BUFFERSIZE, 1)
+                    #import os
+                    os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
+                    self.captureSlave = cv.VideoCapture("rtsp://pislave.local:8080/", cv.CAP_FFMPEG)
+                    #self.captureSlave = cv.VideoCapture('tcp://pislave.local:5000')
+                    self.captureSlave.set(cv.CAP_PROP_BUFFERSIZE, 10)
                     self.camEventSlave = Clock.schedule_interval(partial(self.update_cam,which="Slave"),1/33.0)
                     # self.camEventSlave = Clock.schedule_interval(partial(run_cv_window,ffmpeg_process),1/100.0)
                     self.isSlaveCamOn = True  

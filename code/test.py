@@ -1,7 +1,10 @@
 import cv2
 
-cap = cv2.VideoCapture('tcp://pislave:5000')
-cap.set(cv2.CAP_PROP_BUFFERSIZE, 0)
+import os
+os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
+cap = cv2.VideoCapture("rtsp://pislave.local:8080/", cv2.CAP_FFMPEG)
+#cap = cv2.VideoCapture('tcp://pislave.local:5000')
+#cap.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 400)
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 900)
 
