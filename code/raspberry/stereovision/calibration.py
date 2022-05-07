@@ -1,6 +1,10 @@
 import cv2
 import numpy as np
 import os
+import time
+import sys
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 #########################################################################################################
 #################################   CALIRBRATION    #####################################################
@@ -8,10 +12,14 @@ import os
 '''
 methode qui retourne les caractéristiques du système nécessaires pour le traitement d'image
 '''
-def calibration():
+def calibration(nx = 10, ny = 8):
+    
+    # Capture calibration images
+    captureCalibPics()
+    
     #on définit le chessboard
-    number_of_square_X = 10
-    number_of_square_Y = 8
+    number_of_square_X = nx
+    number_of_square_Y = ny
     nX = number_of_square_X - 1 #le nombre de coins intérieur
     nY = number_of_square_Y - 1
     #les images sont dans le dossier configuration
@@ -23,8 +31,8 @@ def calibration():
     objpoints = [] #3D points in the real world space
     imgpoints = [] #2D points in the image plane
     #on prépare les coordonnées dans le chessboard des angles avec pour unité les cases
-    objp = np.zeros((9*7,3), np.float32)
-    objp[:,:2] = np.mgrid[0:9,0:7].T.reshape(-1,2)
+    objp = np.zeros((nX*nY,3), np.float32)
+    objp[:,:2] = np.mgrid[0:nX,0:nY].T.reshape(-1,2)
     #on fait une boucle for pout traiter automatiquement les images
     for filename in os.listdir(directory):
         filename = directory + '/' +filename
@@ -53,4 +61,47 @@ def calibration():
 
     return mtx, dist, rvecs, tvecs
     
+def captureCalibPics():
+    
+    # Camera init
+    camera = PiCamera()
+    rawCapture = PiRGBArray(camera)
+    
+    # 1st prompt
+    print("Please place the chessboard in both camera's views, and do not move it until next prompt.")
 
+    # Timer display in terminal
+    for remaining in range(10, 0, -1):
+        sys.stdout.write("\r")
+        sys.stdout.write("1st capture in {:2d} seconds".format(remaining)) 
+        sys.stdout.flush()
+        time.sleep(1)
+    
+    # Capture c1Right.jpg from Master camera
+    camera.capture(rawCapture, format='bgr')
+    img = rawCapture.array
+    cv2.imwrite('calibration/c1Right.jpg', img)
+    
+    # TODO: implement Capture c1Left.jpg from Slave camera
+    
+    sys.stdout.write("\rFirst step complete!\n")
+    
+    # 2nd prompt 
+    print("Please move the chessboard slightly by changing its perspective, without rotating it around its normal vector, and do not move it until next prompt.")
+    
+    # Timer display in terminal
+    for remaining in range(10, 0, -1):
+        sys.stdout.write("\r")
+        sys.stdout.write("1st capture in {:2d} seconds".format(remaining)) 
+        sys.stdout.flush()
+        time.sleep(1)
+        
+    # Capture c2Right.jpg from Master camera
+    camera.capture(rawCapture, format='bgr')
+    img = rawCapture.array
+    cv2.imwrite('calibration/c1Right.jpg', img)
+    
+    # TODO: implement Capture c2Left.jpg from Slave camera
+    
+    # 3rd prompt
+    print("The image capture for the calibration is now complete, please wait until calibration is finished.")
