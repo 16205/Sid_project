@@ -25,7 +25,7 @@ def calibration(nx = 10, ny = 8):
     #les images sont dans le dossier configuration
     directory = "calibration"
     #on stocke les images modifiées dans un sous-dossier
-    os.system('mkdir calibration/calibration_result')
+    os.system('mkdir ./raspberry/stereovision/calibration/calibration_result')
     result_directory = "calibration/calibration_result"
     #creating arrays to store the object points and the image points
     objpoints = [] #3D points in the real world space
