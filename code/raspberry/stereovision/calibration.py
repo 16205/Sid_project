@@ -93,12 +93,15 @@ def captureCalibPics():
     ret_s, frame_s = slave_cam.read()
     ret_m, frame_m = master_cam.read()
     while True:
-        if (ret_s == True & ret_m == True):
-            cv2.imwrite('./raspberry/stereovision/calibration/c1Left.jpg', frame_s)
+        if (ret_m == True):
+            print("writing master pic 1")
             cv2.imwrite('./raspberry/stereovision/calibration/c1Right.jpg', frame_m)
             break
-    
-    
+    while True:
+        if (ret_s == True):
+            print("writing slave pic 1")
+            cv2.imwrite('./raspberry/stereovision/calibration/c1Left.jpg', frame_s)
+            break
     
     sys.stdout.write("\rFirst step complete!         \n")
     
@@ -117,17 +120,21 @@ def captureCalibPics():
     # img = rawCapture.array
     # cv2.imwrite('./raspberry/stereovision/calibration/c2Right.jpg', img)
 
-    # Capture slave
     # Capture slave & master
     ret_s, frame_s = slave_cam.read()
     ret_m, frame_m = master_cam.read()
     while True:
-        if (ret_s == True & ret_m == True):
-            cv2.imwrite('./raspberry/stereovision/calibration/c2Left.jpg', frame_s)
+        if (ret_m == True):
+            print("writing master pic 2")
             cv2.imwrite('./raspberry/stereovision/calibration/c2Right.jpg', frame_m)
             break
+    while True:
+        if (ret_s == True):
+            print("writing slave pic 2")
+            cv2.imwrite('./raspberry/stereovision/calibration/c2Left.jpg', frame_s)
+            break
     
-    slave_cam.release()
+    # slave_cam.release()
     master_cam.release()
     # 3rd prompt
     print("The image capture for the calibration is now complete, please wait until calibration is finished.")
