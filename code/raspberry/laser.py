@@ -3,11 +3,11 @@ import RPi.GPIO as IO       # calling header file which helps us use GPIO’s of
 
 import time                 # calling time to provide delays in program
 
-# IO.setwarnings(False)      # do not show any warnings
+IO.setwarnings(False)       # do not show any warnings
 
-IO.setmode (IO.BCM)        # we are programming the GPIO by BCM pin numbers. (PIN33 as ‘GPIO13')
+IO.setmode (IO.BCM)         # we are programming the GPIO by BCM pin numbers. (PIN33 as ‘GPIO13')
 
-# IO.setup(13,IO.OUT)        # initialize GPIO13 as an output.
+IO.setup(13,IO.OUT)         # initialize GPIO13 as an output.
 
 p = IO.PWM(13,100)          # GPIO13 as PWM output, with 100Hz frequency
 

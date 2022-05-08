@@ -13,6 +13,10 @@ class MainApp(App):
     
     def build(self):
         self.title = "SID alpha version 1.4"
+        
+        # Setup GPIO
+        stp.gpioSetup()
+        
         Window.fullscreen = False
         # build the screen manager
         sm = ScreenManager(transition=FadeTransition())
@@ -21,9 +25,6 @@ class MainApp(App):
         sm.add_widget(SettingsScreen(name='Settings'))      
         sm.add_widget(RunScreen(name='Run'))
         sm.add_widget(StorageScreen(name='Storage'))
-
-        # Setup GPIO
-        stp.gpioSetup()
                 
         return sm
 
