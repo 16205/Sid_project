@@ -5,7 +5,7 @@ import os
 import pexpect
 from pexpect import pxssh
 import sys
-import sshTools as sshTools
+#import sshTools as sshTools
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
 from picamera.array import PiRGBArray
@@ -14,11 +14,19 @@ import time
 # import jsonTools as jt
 # import red_pixs as rp
 # from msilib.schema import Directory
-from stepper import *
-from laser import *
-from copy_slave_pics import *
-from sshTools import * 
-from prise_image_bon import *
+
+try:
+    import sshTools as sshTools
+    from stepper import *
+    from laser import *
+    from copy_slave_pics import *
+    from prise_image_bon import *
+except:
+    import raspberry.sshTools 
+    from raspberry.stepper import *
+    from raspberry.laser import *
+    from raspberry.copy_slave_pics import *
+    from raspberry.prise_image_bon import *
 # reading the scan_name from the input
 # scan_name = sys.argv[1]
 # quality = sys.argv[2]
@@ -114,7 +122,7 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
 
     GPIO.cleanup() # clear GPIO allocations after run
 
-runScan("test")
+#runScan("test")
 
 def scan2json(scan_name):
     jt.build_Json4scan(scan_name)

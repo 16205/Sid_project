@@ -156,8 +156,11 @@ class SettingsScreen(Screen):
                 try:                   
                     
                     os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
+                    #os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
                     self.captureSlave = cv.VideoCapture("rtsp://pislave.local:8080/", cv.CAP_FFMPEG)
-                    self.captureSlave.set(cv.CAP_PROP_BUFFERSIZE, 10)
+                    self.captureSlave.set(cv.CAP_PROP_BUFFERSIZE, 38)
+                    
+                    
                     self.camEventSlave = Clock.schedule_interval(partial(self.update_cam,which="Slave"),1/33.0)
                     
 
