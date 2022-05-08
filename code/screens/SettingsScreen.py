@@ -16,7 +16,6 @@ from kivy.uix.popup import Popup
 import cv2 as cv
 import numpy as np
 import os
-import subprocess
 
 from functools import partial
 from raspberry.stereovision.calibration import calibration
@@ -66,8 +65,8 @@ class SettingsScreen(Screen):
         self.img1 = Image(source='res/not_found.png') # master
         self.img2 = Image(source='res/not_found.png') # slave
 
-        camsGrid.add_widget(self.img1)
         camsGrid.add_widget(self.img2)
+        camsGrid.add_widget(self.img1)        
         widgetsBox.add_widget(camsGrid)
 
         # labels on the left column
@@ -109,11 +108,7 @@ class SettingsScreen(Screen):
 
     def update_cam(self,dt,which="Master"):
         if which=="Slave":
-            # ret, frame = self.captureSlave.read()
-            #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            #self.captureSlave.grab()
-            #ret, frame = self.captureSlave.retrieve()
-            frame = self.captureSlave
+            ret, frame = self.captureSlave.read()
         else:
             ret, frame = self.captureMaster.read()
 
@@ -154,55 +149,18 @@ class SettingsScreen(Screen):
                 except:
                     print("error with Master camera")
 
-        def run_ffmpeg():
-            ffmpg_cmd = [
-                self.FFMPEG_BIN,
-                '-i', 'tcp://pislave:5000/',
-                '-video_size', '1296x972',
-                '-pix_fmt', 'bgr24',        # opencv requires bgr24 pixel format
-                '-vcodec', 'rawvideo',
-                '-an','-sn',                # disable audio processing
-                '-f', 'image2pipe',
-                '-',                        # output to go to stdout
-            ]
-            return subprocess.Popen(ffmpg_cmd, stdout = subprocess.PIPE, bufsize=10**8)
-
-        def run_cv_window(process):
-            # read frame-by-frame
-            raw_image = process.stdout.read(1296*972*3)
-            if raw_image == b'':
-                raise RuntimeError("Empty pipe")
-            
-            # transform the bytes read into a numpy array
-            frame =  np.frombuffer(raw_image, dtype='uint8')
-            frame = frame.reshape((972,1296,3)) # height, width, channels
-            if frame is not None:
-                # cv.imshow('Video', frame)
-                self.captureSlave = frame
-                self.update_cam(0,"Slave")
-            
-            # if cv2.waitKey(1) & 0xFF == ord('q'):
-            #     break
-            if self.isSlaveCamOn:
-                process.stdout.flush()            
-                process.terminate()
-                print(process.poll())
 
         def turnCamOn(which):
             if which== "Slave":
                 
-                try:
+                try:                   
                     
+                    os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
+                    self.captureSlave = cv.VideoCapture("rtsp://pislave.local:8080/", cv.CAP_FFMPEG)
+                    self.captureSlave.set(cv.CAP_PROP_BUFFERSIZE, 10)
+                    self.camEventSlave = Clock.schedule_interval(partial(self.update_cam,which="Slave"),1/33.0)
                     
-                    # os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
-                    # self.captureSlave = cv.VideoCapture("rtsp://pislave.local:8080/", cv.CAP_FFMPEG)
-                    #self.captureSlave = cv.VideoCapture('tcp://pislave.local:5000')
-                    # self.captureSlave.set(cv.CAP_PROP_BUFFERSIZE, 10)
-                    # self.camEventSlave = Clock.schedule_interval(partial(self.update_cam,which="Slave"),1/33.0)
-                    
-                    # Test low latency
-                    ffmpeg_process = run_ffmpeg()
-                    self.camEventSlave = Clock.schedule_interval(partial(run_cv_window,ffmpeg_process),1/33.0)
+
                     self.isSlaveCamOn = True  
                 except:
                     print("Slave cam is not connected")
