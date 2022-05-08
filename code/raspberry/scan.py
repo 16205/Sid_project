@@ -74,21 +74,18 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
         print("name_picture_r = ", name_picture_r)
         print("name_picture_l = ", name_picture_l)
 
+        # Master image capture
         imageCapture(scan_name, name_picture_r) # Master = right camera
         print("Master captured image")
 
-        # take picture on the slave
-        try:
-            # TODO: put the pictures inside /mnt/home/pi/scans/{scan_name}
-            
+        # Slave image capture
+        try:            
             sshTools.takePictureWithSlave(scan_name, name_picture_l)
-            
             print("Slave captured image")
             
         except os.system.error as e:
             print(str(e))
         
-
         # Run the stepper
         time.sleep(5)
         makeStep(step_number,step_size, doEnd=True)
