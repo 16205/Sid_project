@@ -5,8 +5,9 @@ from kivy.core.window import Window
 from screens.HomePageScreen import HomePageScreen 
 from screens.RunScreen import  RunScreen
 from screens.StorageScreen import StorageScreen
-from screens.SettingsScreen import SettingsScreen   
+from screens.SettingsScreen import SettingsScreen
 
+import raspberry.GPIO_setup as stp
 
 class MainApp(App):
     
@@ -21,6 +22,9 @@ class MainApp(App):
         sm.add_widget(RunScreen(name='Run'))
         sm.add_widget(StorageScreen(name='Storage'))
 
+        # Setup GPIO
+        stp.gpioSetup()
+                
         return sm
 
 if __name__ == '__main__':
