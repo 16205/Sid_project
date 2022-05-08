@@ -17,4 +17,4 @@ def imageCapture(scan_name, name_picture, camera):
     img = rawCapture.array
 
     # on stocke l'image rgb
-    cv2.imwrite('/home/pi/Sid_project/scans/' + scan_name + '/' + name_picture + '.jpg', img)
+    cv2.imwrite('/home/pi/Sid_project/scans/scanRight' + scan_name + '/' + name_picture + '.jpg', img)
