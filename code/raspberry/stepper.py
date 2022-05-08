@@ -31,6 +31,7 @@ EN_pin = 24     # enable pin (LOW to enable)
 mymotortest = RpiMotorLib.A4988Nema(direction, step, (2,3,4), "A4988")
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
+GPIO.setup(EN_pin,GPIO.HIGH) # set enable signal to high, to lock the motor in place
 
 '''
 step size : 

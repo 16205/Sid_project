@@ -124,7 +124,7 @@ class RunScreen(Screen):
 
         # Laser power widget : label and slider
         laserLabel = Label(text="Laser power",size_hint_y=None, height=widgetHeight)
-        laserSlider = Slider(min=0, max=100, value=self.laserPower, step = 10,value_track=True,value_track_color=[1, 1, 0, 1])
+        laserSlider = Slider(min=0, max=70, value=self.laserPower, step = 1,value_track=True,value_track_color=[1, 1, 0, 1])
         laserValueLabel = Label(text=f"{int(self.laserPower)}%")
         # sets the laser a duty at the start
         #TODO: uncomment
