@@ -70,34 +70,34 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
     setDuty(laser_power)
     turnLaserOn()
 
-    for i in range(1, step_nbr):
-        print(i)
+    # for i in range(1, step_nbr):
+    #     print(i)
 
-        name_picture_r = scan_name +"_R_"+str(i) # create the file name for the i th picture from the rigth camera
-        name_picture_l = scan_name+"_L_"+str(i)  # create the filename for the i th picture from the left camera
-        # on prend les images
-        print("name_picture_r = ", name_picture_r)
-        print("name_picture_l = ", name_picture_l)
+    #     name_picture_r = scan_name +"_R_"+str(i) # create the file name for the i th picture from the rigth camera
+    #     name_picture_l = scan_name+"_L_"+str(i)  # create the filename for the i th picture from the left camera
+    #     # on prend les images
+    #     print("name_picture_r = ", name_picture_r)
+    #     print("name_picture_l = ", name_picture_l)
 
-        # Master image capture
-        imageCapture(scan_name, name_picture_r, camera) # Master = right camera
-        print("Master captured image")
+    #     # Master image capture
+    #     imageCapture(scan_name, name_picture_r, camera) # Master = right camera
+    #     print("Master captured image")
 
-        # take picture on the slave
-        try:
-            # TODO: put the pictures inside /mnt/home/pi/scans/{scan_name}
+    #     # take picture on the slave
+    #     try: 
+    #         # TODO: put the pictures inside /mnt/home/pi/scans/{scan_name}
             
-            sshTools.takePictureWithSlave(scan_name, name_picture_l, i)
+    #         sshTools.takePictureWithSlave(scan_name, name_picture_l, i)
 
-            print("Slave captured image")
+    #         print("Slave captured image")
             
-        except os.system.error as e:
-            print(str(e))
+    #     except os.system.error as e:
+    #         print(str(e))
         
-        # Run the stepper
-        time.sleep(5)
-        makeStep(step_number,step_size, doEnd=True)
-        time.sleep(0.2)
+    #     # Run the stepper
+    #     time.sleep(5)
+    #     makeStep(step_number,step_size, doEnd=True)
+    #     time.sleep(0.2)
 
     # copy slave images into the master scan folder
     copy_slave_pics(scan_name)
