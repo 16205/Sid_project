@@ -68,6 +68,7 @@ def captureCalibPics():
     # rawCapture = PiRGBArray(camera)
 
     # get the slave video feed
+    os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
     slave_cam = cv2.VideoCapture("rtsp://pislave.local:8080/",cv2.CAP_FFMPEG)
     slave_cam.set(cv2.CAP_PROP_BUFFERSIZE, 10) # 10 pics in the buffer
 
