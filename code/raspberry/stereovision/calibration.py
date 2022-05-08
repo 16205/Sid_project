@@ -3,8 +3,8 @@ import numpy as np
 import os
 import time
 import sys
-from picamera.array import PiRGBArray
-from picamera import PiCamera
+# from picamera.array import PiRGBArray
+# from picamera import PiCamera
 
 #########################################################################################################
 #################################   CALIRBRATION    #####################################################
@@ -64,12 +64,15 @@ def calibration(nx = 10, ny = 8):
 def captureCalibPics():
     
     # Camera init
-    camera = PiCamera()
-    rawCapture = PiRGBArray(camera)
+    # camera = PiCamera()
+    # rawCapture = PiRGBArray(camera)
 
     # get the slave video feed
     slave_cam = cv2.VideoCapture("rtsp://pislave.local:8080/",cv2.CAP_FFMPEG)
     slave_cam.set(cv2.CAP_PROP_BUFFERSIZE, 10) # 10 pics in the buffer
+
+    # get master video feed
+    master_cam = cv2.VideoCapture(0)
     
     # 1st prompt
     print("Please place the chessboard in both camera's views, and do not move it until next prompt.")
@@ -82,16 +85,19 @@ def captureCalibPics():
         time.sleep(1)
     
     # Capture c1Right.jpg from Master camera
-    camera.capture(rawCapture, format='bgr')
-    img = rawCapture.array
-    cv2.imwrite('./raspberry/stereovision/calibration/c1Right.jpg', img)
+    # camera.capture(rawCapture, format='bgr')
+    # img = rawCapture.array
+    # cv2.imwrite('./raspberry/stereovision/calibration/c1Right.jpg', img)
 
-    # Capture slave
-    ret, frame = slave_cam.read()
+    # Capture slave & master
+    ret_s, frame_s = slave_cam.read()
+    ret_m, frame_m = master_cam.read()
     while True:
-        if ret == True:
-            cv2.imwrite('./raspberry/stereovision/calibration/c1Left.jpg', frame)
+        if (ret_s == True & ret_m == True):
+            cv2.imwrite('./raspberry/stereovision/calibration/c1Left.jpg', frame_s)
+            cv2.imwrite('./raspberry/stereovision/calibration/c1Right.jpg', frame_m)
             break
+    
     
     
     sys.stdout.write("\rFirst step complete!         \n")
@@ -107,17 +113,21 @@ def captureCalibPics():
         time.sleep(1)
         
     # Capture c2Right.jpg from Master camera
-    camera.capture(rawCapture, format='bgr')
-    img = rawCapture.array
-    cv2.imwrite('./raspberry/stereovision/calibration/c2Right.jpg', img)
+    # camera.capture(rawCapture, format='bgr')
+    # img = rawCapture.array
+    # cv2.imwrite('./raspberry/stereovision/calibration/c2Right.jpg', img)
 
     # Capture slave
-    ret, frame = slave_cam.read()
+    # Capture slave & master
+    ret_s, frame_s = slave_cam.read()
+    ret_m, frame_m = master_cam.read()
     while True:
-        if ret == True:
-            cv2.imwrite('./raspberry/stereovision/calibration/c2Left.jpg', frame)
+        if (ret_s == True & ret_m == True):
+            cv2.imwrite('./raspberry/stereovision/calibration/c2Left.jpg', frame_s)
+            cv2.imwrite('./raspberry/stereovision/calibration/c2Right.jpg', frame_m)
             break
     
     slave_cam.release()
+    master_cam.release()
     # 3rd prompt
     print("The image capture for the calibration is now complete, please wait until calibration is finished.")
