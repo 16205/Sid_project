@@ -78,18 +78,12 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
         imageCapture(scan_name, name_picture_r) # Master = right camera
         print("Master captured image")
 
-<<<<<<< HEAD
         # take picture on the slave
         try:
             # TODO: put the pictures inside /mnt/home/pi/scans/{scan_name}
             
             sshTools.takePictureWithSlave(scan_name, name_picture_l, i)
-            
-=======
-        # Slave image capture
-        try:            
-            sshTools.takePictureWithSlave(scan_name, name_picture_l)
->>>>>>> 3472a31d8657afeb1347d8c4889552b3f0adfea2
+
             print("Slave captured image")
             
         except os.system.error as e:
