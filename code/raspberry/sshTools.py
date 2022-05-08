@@ -1,6 +1,8 @@
 import os
 import pexpect
 from pexpect import pxssh
+import time
+import sys
 '''
 method to get a picture back from the slave
 
@@ -30,6 +32,7 @@ def takePictureWithSlave(scan_name, picture_name, step_number):
     condition = True
     while(condition): 
         try:
+            print("ok")
             ssh  = pxssh.pxssh()
             hostname, username, password ='piSlave.local', 'pi', 'pi'
             ssh.login(hostname, username, password, sync_multiplier=5, auto_prompt_reset=False) # on connecte le client
@@ -39,9 +42,10 @@ def takePictureWithSlave(scan_name, picture_name, step_number):
         except pxssh.ExceptionPxssh as e:
             print("pxssh failed to login")
             print(str(e))
-        
-        file_list = os.listdir("/mnt/home/pi/scans/" + scan_name)
-        if(picture_name in file_list):
+        time.sleep(2)
+        file_list = os.listdir(f"/mnt/home/pi/scans/{scan_name}")
+        print(file_list)
+        if(picture_name+".jpg" in file_list):
             condition = False
             break
 
@@ -56,7 +60,7 @@ def createFolderSlave(folder_name):
         ssh = pxssh.pxssh()
         hostname, username, password ='piSlave.local', 'pi', 'pi'
         ssh.login(hostname, username, password, sync_multiplier=5, auto_prompt_reset=False) #on connecte le client
-        ssh.sendline('mkdir '+folder_name)
+        ssh.sendline('mkdir scans/'+folder_name)
         ssh.logout()
     except pxssh.ExceptionPxssh as e:
         print("connection failed to login")

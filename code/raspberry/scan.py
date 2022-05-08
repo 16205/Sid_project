@@ -5,18 +5,18 @@ import os
 import pexpect
 from pexpect import pxssh
 import sys
-import sshTools 
+import sshTools as sshTools
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
 import time
 # import jsonTools as jt
 # import red_pixs as rp
 # from msilib.schema import Directory
-from raspberry.stepper import *
-from raspberry.laser import *
-from raspberry.copy_slave_pics import *
-from raspberry.sshTools import * 
-from raspberry.prise_image_bon import *
+from stepper import *
+from laser import *
+from copy_slave_pics import *
+from sshTools import * 
+from prise_image_bon import *
 # reading the scan_name from the input
 # scan_name = sys.argv[1]
 # quality = sys.argv[2]
@@ -78,9 +78,18 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
         imageCapture(scan_name, name_picture_r) # Master = right camera
         print("Master captured image")
 
+<<<<<<< HEAD
+        # take picture on the slave
+        try:
+            # TODO: put the pictures inside /mnt/home/pi/scans/{scan_name}
+            
+            sshTools.takePictureWithSlave(scan_name, name_picture_l, i)
+            
+=======
         # Slave image capture
         try:            
             sshTools.takePictureWithSlave(scan_name, name_picture_l)
+>>>>>>> 3472a31d8657afeb1347d8c4889552b3f0adfea2
             print("Slave captured image")
             
         except os.system.error as e:
@@ -106,7 +115,7 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
 
     GPIO.cleanup() # clear GPIO allocations after run
     
-#runScan("test")
+runScan("test")
 
 def scan2json(scan_name):
     jt.build_Json4scan(scan_name)
@@ -115,8 +124,6 @@ def scan2json(scan_name):
     for i in range(len(files)/2):
         if i != 113:
             #on intègre l'imagede gauche dans le json 
-            picture_name = scan_name+'_L_'+str(i)+'.jpg'
-            pict_path = scan_name+'/'+picture_name
             img = cv2.imread(pict_path)
             coords = rp.get_red_points_coordinates(img,'saturation')
             jt.addNpArray2Json(coords, json_name, picture_name)
@@ -148,5 +155,7 @@ def pict2Dico(scan_name, picture_name, color, dico):
     pict_path = scan_name+'/'+picture_name
     img = cv2.imread(pict_path)
     coords = rp.get_avg_red_pixs(img,color)
-    list = coords.tolist()
-    dico.update({picture_name:list})
+#arg1 : the scan's name
+#arg2 : the number of steps
+#arg1 : the scan's name
+#arg2 : the number of steps
