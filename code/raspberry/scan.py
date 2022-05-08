@@ -35,7 +35,7 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
     """
     # initialize the camera and grab a reference to the raw camera capture  
     camera = PiCamera()
-    camera.resolution = (3280,2464)
+    camera.resolution = (1640,1232)
     # on crée les dossier pour le scan dans le master et dans la slave 
     os.system('mkdir /home/pi/Sid_project/scans/'+ scan_name) #on crée le dossier dans le master
     os.system('mkdir /home/pi/Sid_project/scans/'+ scan_name+'/'+"scanRight") #on crée le sous dossier de scan qui sera pour les images de droite
