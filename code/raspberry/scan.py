@@ -31,7 +31,7 @@ except:
 # scan_name = sys.argv[1]
 # quality = sys.argv[2]
 
-def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = "test"):
+def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = "test1"):
     """
     Run the scan : activate stepper and take pictures\n
     Params:\n
