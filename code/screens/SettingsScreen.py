@@ -15,6 +15,8 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.popup import Popup
 import cv2 as cv
 import numpy as np
+import os
+import subprocess
 
 from functools import partial
 from raspberry.stereovision.calibration import calibration
@@ -28,6 +30,9 @@ class SettingsScreen(Screen):
         self.BUTTON_COLOR = (0.082,0.629,0.925,1)
         self.isMasterCamOn = False
         self.isSlaveCamOn = False
+
+        self.FFMPEG_BIN = '/usr/bin/ffmpeg'
+
 
         # _____________the whole page_____________
         pageGrid = BoxLayout(orientation= 'vertical')
@@ -70,7 +75,7 @@ class SettingsScreen(Screen):
         camerasLabel = Label(text="Test the cameras",size_hint_y=None, height=self.winSize[1]/5)
 
         # buttons on the right column
-        buttonsName = ["Connect", "Master (L)", "Slave (R)", "Capture/Calibrate"]
+        buttonsName = ["Connect", "Slave (L)", "Master (R)", "Capture/Calibrate"]
         buttons = []
         for i in range (len(buttonsName)):
             btn = Button(text=buttonsName[i], font_size=24, background_color=self.BUTTON_COLOR)
@@ -105,15 +110,20 @@ class SettingsScreen(Screen):
     def update_cam(self,dt,which="Master"):
         if which=="Slave":
             # ret, frame = self.captureSlave.read()
-            self.captureSlave.grab()
-            ret, frame = self.captureSlave.retrieve()
+            #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            #self.captureSlave.grab()
+            #ret, frame = self.captureSlave.retrieve()
+            frame = self.captureSlave
         else:
             ret, frame = self.captureMaster.read()
 
         # convert it to texture
         buf1 = cv.flip(frame, 0)
         buf = buf1.tostring()
-        texture1 = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr') 
+        try:
+            texture1 = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+        except:
+            texture1 = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgra')
 
         #if working on RASPBERRY PI, use colorfmt='rgba' here instead, but stick with "bgr" in blit_buffer. 
         texture1.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
@@ -144,16 +154,55 @@ class SettingsScreen(Screen):
                 except:
                     print("error with Master camera")
 
+        def run_ffmpeg():
+            ffmpg_cmd = [
+                self.FFMPEG_BIN,
+                '-i', 'tcp://pislave:5000/',
+                '-video_size', '1296x972',
+                '-pix_fmt', 'bgr24',        # opencv requires bgr24 pixel format
+                '-vcodec', 'rawvideo',
+                '-an','-sn',                # disable audio processing
+                '-f', 'image2pipe',
+                '-',                        # output to go to stdout
+            ]
+            return subprocess.Popen(ffmpg_cmd, stdout = subprocess.PIPE, bufsize=10**8)
+
+        def run_cv_window(process):
+            # read frame-by-frame
+            raw_image = process.stdout.read(1296*972*3)
+            if raw_image == b'':
+                raise RuntimeError("Empty pipe")
+            
+            # transform the bytes read into a numpy array
+            frame =  np.frombuffer(raw_image, dtype='uint8')
+            frame = frame.reshape((972,1296,3)) # height, width, channels
+            if frame is not None:
+                # cv.imshow('Video', frame)
+                self.captureSlave = frame
+                self.update_cam(0,"Slave")
+            
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
+            if self.isSlaveCamOn:
+                process.stdout.flush()            
+                process.terminate()
+                print(process.poll())
 
         def turnCamOn(which):
             if which== "Slave":
+                
                 try:
                     
-                    # ffmpeg_process = run_ffmpeg()
-                    self.captureSlave = cv.VideoCapture('tcp://pislave:5000')
-                    self.captureSlave.set(cv.CAP_PROP_BUFFERSIZE, 1)
-                    self.camEventSlave = Clock.schedule_interval(partial(self.update_cam,which="Slave"),1/33.0)
-                    # self.camEventSlave = Clock.schedule_interval(partial(run_cv_window,ffmpeg_process),1/100.0)
+                    
+                    # os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;udp"
+                    # self.captureSlave = cv.VideoCapture("rtsp://pislave.local:8080/", cv.CAP_FFMPEG)
+                    #self.captureSlave = cv.VideoCapture('tcp://pislave.local:5000')
+                    # self.captureSlave.set(cv.CAP_PROP_BUFFERSIZE, 10)
+                    # self.camEventSlave = Clock.schedule_interval(partial(self.update_cam,which="Slave"),1/33.0)
+                    
+                    # Test low latency
+                    ffmpeg_process = run_ffmpeg()
+                    self.camEventSlave = Clock.schedule_interval(partial(run_cv_window,ffmpeg_process),1/33.0)
                     self.isSlaveCamOn = True  
                 except:
                     print("Slave cam is not connected")
@@ -189,18 +238,18 @@ class SettingsScreen(Screen):
 
         elif name == "Connect":
             print('Connecting slave to master')
-        elif name == "Master (L)":
+        elif name == "Master (R)":
             if self.isMasterCamOn:
                 turnCamOff("Master")
             else:
                 turnCamOn("Master")     
             print("master cam : L")
-        elif name == "Slave (R)":
+        elif name == "Slave (L)":
             if self.isSlaveCamOn:
                 turnCamOff("Slave")
             else:
                 turnCamOn("Slave")     
-            print("slave cam : R")
+            print("slave cam : L")
         elif name == "Capture/Calibrate":            
             print("capturing")
             calibrate()            
