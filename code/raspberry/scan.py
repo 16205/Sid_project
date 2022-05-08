@@ -36,8 +36,8 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
     # initialize the camera and grab a reference to the raw camera capture  
     camera = PiCamera()
     # on crée les dossier pour le scan dans le master et dans la slave 
-    os.system('mkdir '+ scan_name) #on crée le dossier dans le master
-    os.system('mkdir '+ scan_name+'/'+"scanRight") #on crée le sous dossier de scan qui sera pour les images de droite
+    os.system('mkdir /home/pi/Sid_project/scans/'+ scan_name) #on crée le dossier dans le master
+    os.system('mkdir /home/pi/Sid_project/scans/'+ scan_name+'/'+"scanRight") #on crée le sous dossier de scan qui sera pour les images de droite
     sshTools.createFolderSlave(scan_name) #on crée le dossier dans le slave
     print("folders created")
     
