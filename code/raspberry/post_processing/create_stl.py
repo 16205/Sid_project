@@ -159,7 +159,7 @@ def add_missing_points(points):
     return vertices, columns, rows
 
 
-def create_mesh(vertices, faces):
+def create_mesh(vertices, faces, folderName):
     """
     Function to transform vertices and faces into a 3D mesh.\n
     Output : creates a 3D stl file from the mesh.
@@ -170,13 +170,19 @@ def create_mesh(vertices, faces):
             new_stl.vectors[i][j] = vertices[f[j],:]
 
     # Write the mesh to file "new_stl.stl"
-    new_stl.save('code/raspberry/post_processing/newdzadz_stl.stl')
+    # new_stl.save('code/raspberry/post_processing/newdzadz_stl.stl')
+    name = f'{folderName}_by_SID.stl'
+    new_stl.save(f'scans/{folderName}/{name}')
+    print(f"mesh {name} created!")
 
 # do
-# vertices, faces = create_stl(6)
-with open('code/raspberry/post_processing/new_cylinder.json') as json_file:
-    data = json.load(json_file)
 
-points, columns, rows = add_missing_points(data)
-vertices, faces = create_stl(points, columns, rows)
-create_mesh(vertices, faces)
+def run(folderName):
+    with open(f'scans/{folderName}/NUAAAGE.json') as json_file:
+        data = json.load(json_file)
+
+
+    points, columns, rows = add_missing_points(data)
+    vertices, faces = create_stl(points, columns, rows)
+    create_mesh(vertices, faces, folderName)
+    

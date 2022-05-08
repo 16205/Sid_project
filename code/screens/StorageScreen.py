@@ -8,6 +8,8 @@ from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
+import raspberry.post_processing.create_stl as Stl
+
 import os
 
 class StorageScreen(Screen):
@@ -200,6 +202,7 @@ class StorageScreen(Screen):
     def convertFolders(self,folders):
         for folder in folders:
             print(f'Convert {folder} to a .obj file')
+            Stl.run(folder)
 
     def unselectFolders(self):
         # when quitting the screen or a popup
