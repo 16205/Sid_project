@@ -8,6 +8,8 @@ import sys
 import sshTools as sshTools
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 import time
 # import jsonTools as jt
 # import red_pixs as rp
@@ -31,7 +33,8 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
     - scale = size of the piece to scan (5,10,15,20)\n
     - scan_name = name of the scan (if None => 'test')
     """
-
+    # initialize the camera and grab a reference to the raw camera capture  
+    camera = PiCamera()
     # on crée les dossier pour le scan dans le master et dans la slave 
     os.system('mkdir '+ scan_name) #on crée le dossier dans le master
     sshTools.createFolderSlave(scan_name) #on crée le dossier dans le slave
@@ -75,7 +78,7 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
         print("name_picture_l = ", name_picture_l)
 
         # Master image capture
-        imageCapture(scan_name, name_picture_r) # Master = right camera
+        imageCapture(scan_name, name_picture_r, camera) # Master = right camera
         print("Master captured image")
 
         # take picture on the slave
@@ -108,7 +111,7 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
 
 
     GPIO.cleanup() # clear GPIO allocations after run
-    
+
 runScan("test")
 
 def scan2json(scan_name):

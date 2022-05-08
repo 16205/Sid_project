@@ -4,10 +4,9 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 
-def imageCapture(scan_name, name_picture):
+def imageCapture(scan_name, name_picture, camera):
     
-    # initialize the camera and grab a reference to the raw camera capture  
-    camera = PiCamera()
+
     rawCapture = PiRGBArray(camera)
 
     # allow the camera to warm up
