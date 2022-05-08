@@ -20,7 +20,7 @@ def create_sablier():
         json.dump(coords, outfile)
 
     return x,y,z
-create_sablier()
+# create_sablier()
 
 def create_sphere(columns=42, rows = 8):
     x = []
@@ -93,3 +93,32 @@ def create_cylinder(columns=3, rows = 3):
 
     return x,y,z
 # x,y,z = create_cylinder(42,4)
+
+def create_cylinder_with_missing_points(columns=8, rows = 7):
+    x = []
+    y = []
+    z = []
+
+    angle = 360/columns
+    coords = []
+
+    for i in range(columns):
+        alpha = math.radians(angle * i)
+
+        column = []
+        for j in range(rows): 
+            xi = math.cos(alpha)
+            yi = math.sin(alpha)
+            zi = j
+
+            column.append([xi,yi,zi])
+
+        coords.append(column)
+
+
+    with open('code/raspberry/post_processing/new_cylinder.json', 'w') as outfile:
+        json.dump(coords, outfile)
+
+    return x,y,z
+
+create_cylinder_with_missing_points()

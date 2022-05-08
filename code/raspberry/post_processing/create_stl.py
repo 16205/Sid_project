@@ -1,8 +1,11 @@
 from stl import mesh
 import numpy as np
 import json
+import math
 
-def create_stl(columns):
+
+    
+def create_stl(data, columns, rows):
     """
     Function to transform an array of xyz points vertices and faces.\n
     Parameters : columns corresponds to the number of slices the scanner did
@@ -10,13 +13,12 @@ def create_stl(columns):
     Returns : (vertices, faces), both are arrays    
     """
     # create vertices (or points)
-    with open('code/raspberry/post_processing/sablier.json') as json_file:
-        data = json.load(json_file)
-    vertices = np.array(data)
+    # with open('code/raspberry/post_processing/sablier.json') as json_file:
+    #     data = json.load(json_file)
+    vertices = data
 
     # number of points per collumn
-    lines = (int)(len(data)/columns)
-
+    lines = rows
     top = lines - 1
 
     # get the sum of the top and bottom points coordinates to then get the mean
@@ -83,6 +85,79 @@ def create_stl(columns):
     return vertices, faces
 
 
+def add_missing_points(points):
+    """
+    Function to add_missing_points.\n
+    Parameters : 3D array of points\n
+    Returns : (vertices, columns, rows)
+    """
+    
+    # get the max number of points per column (best resolution)
+    max_rows = 0
+    for col in points:
+        size = len(col)
+        max_rows = max(size,max_rows)
+
+    # add missing points by approximating
+    new_points = []
+    a = 0
+    for col in points:
+
+        # add extreme missing points
+        if (len(col) < max_rows):
+            if a == 0:
+                bottom_mean = np.add(points[-1][0],points[a+1][0]) /2
+                top_mean = np.add(points[-1][-1],points[a+1][-1]) /2
+            elif a == len(col) -1:
+                bottom_mean = np.add(points[a-1][0],points[-1][0]) /2
+                top_mean = np.add(points[a-1][-1],points[-1][-1]) /2
+            else:
+                bottom_mean = np.add(points[a-1][0],points[a+1][0]) /2
+                top_mean = np.add(points[a-1][-1],points[a+1][-1]) /2
+
+            if (abs(bottom_mean[2] - col[0][2]) > col[0][2]*0.1):
+                col =  [[col[0][0],col[0][1],bottom_mean[2]]] + col
+                # col = col[:index] + [bottom_mean]
+                # print([bottom_mean] + col[:index])
+            if (abs(top_mean[2] - col[-1][2])> col[-1][2]*0.1):            
+                col = col[:-1] + [[col[-1][0],col[-1][1],top_mean[2]]]
+        
+        # calculate step 
+        column = np.array(col)
+        highest = column[column.argmax(axis=0)[2]][2]
+        smallest = column[column.argmin(axis=0)[2]][2]
+        height = highest - smallest + 1
+        discrete_height = height / max_rows
+        step = smallest + discrete_height
+        index = 0
+
+        # middle points
+        while (len(col) < max_rows):
+            oui = [i for i, e in enumerate(col) if (e[2] - col[i - 1][2]) > step ]
+            index = oui[0]            
+
+            mean_x = (col[index - 1][0] + col[index][0])/2
+            mean_y = (col[index - 1][1] + col[index][1])/2
+            # print(step * index)
+            
+            # add new points in column
+            if index == len(col):
+                col = col[:index] + [[mean_x,mean_y,step * index]]                
+            else:
+                col = col[:index] + [[mean_x,mean_y,step * index]] + col[index:]
+
+        new_points.append(col)
+        a += 1
+        # print(col, "\n")
+            
+    vertices = np.array(new_points)
+    shape = np.shape(vertices)
+
+    vertices = vertices.reshape(shape[0]*shape[1],shape[2])
+    columns = shape[0]
+    rows = shape[1]
+    return vertices, columns, rows
+
 
 def create_mesh(vertices, faces):
     """
@@ -95,8 +170,13 @@ def create_mesh(vertices, faces):
             new_stl.vectors[i][j] = vertices[f[j],:]
 
     # Write the mesh to file "new_stl.stl"
-    new_stl.save('code/raspberry/post_processing/new_stl.stl')
+    new_stl.save('code/raspberry/post_processing/newdzadz_stl.stl')
 
 # do
-vertices, faces = create_stl(6)
+# vertices, faces = create_stl(6)
+with open('code/raspberry/post_processing/new_cylinder.json') as json_file:
+    data = json.load(json_file)
+
+points, columns, rows = add_missing_points(data)
+vertices, faces = create_stl(points, columns, rows)
 create_mesh(vertices, faces)
