@@ -228,7 +228,7 @@ class RunScreen(Screen):
         buttons = GridLayout(cols=4,padding = (self.winSize[0]/50,self.winSize[1]/50), 
                             spacing=(self.winSize[0]/50,self.winSize[1]/50),
                             size_hint_y=None, height=self.winSize[1]/5)
-        namesList = ["Close","Cancel","Pause","Resume"]
+        namesList = ["Close","Cancel","Pause","Play"]
 
         for i in range (len(namesList)):
             btn = Button(text=namesList[i], font_size=24, background_color=self.BUTTON_COLOR)
@@ -281,10 +281,9 @@ class RunScreen(Screen):
         elif name == "Save":
             print("save current settings in json")
         elif name == "Run":
-            turnCamOff()
+            # turnCamOff()
             self.showRunPopup()
-            #TODO: uncomment
-            runScan(self.resolution, self.laserPower, self.colorSpace, self.scale)
+            # runScan(self.resolution, self.laserPower, self.colorSpace, self.scale)
             print("teste")
         elif name =="Close":
             #TODO: uncomment
@@ -300,9 +299,10 @@ class RunScreen(Screen):
         elif name =="Pause":
             # TODO: pause the running loop
             self.isPaused = True
-        elif name =="Resume":
-            # TODO: resume the progress
+        elif name =="Play":
             self.isPaused = False
+            turnCamOff()
+            runScan(self.resolution, self.laserPower, self.colorSpace, self.scale)
         elif name =="Turn laser":
             if self.isLaserOn == True:
                 self.isLaserOn = False
