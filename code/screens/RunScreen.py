@@ -53,10 +53,10 @@ class RunScreen(Screen):
 
         buf1 = cv.flip(color, 0)
         buf = buf1.tostring()
-        image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='luminance')
-        image_texture.blit_buffer(buf, colorfmt='luminance', bufferfmt='ubyte')
+        self.image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='luminance')
+        self.image_texture.blit_buffer(buf, colorfmt='luminance', bufferfmt='ubyte')
         # display image from the texture
-        self.img1.texture = image_texture
+        self.img1.texture = self.image_texture
     
 
     def addWidgets(self):
@@ -215,8 +215,10 @@ class RunScreen(Screen):
         content = GridLayout(cols=1)
 
         # capture 
-        scanImg = Image(source='res/sid.jpg')
-
+        try:
+            scanImg = self.image_texture
+        except:
+            scanImg = Image(source='res/sid.jpg')
         # progress bar
         
         pb = ProgressBar(value=0, max=100,size_hint_y=None, height=self.winSize[1]/15)
