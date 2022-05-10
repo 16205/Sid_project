@@ -209,7 +209,7 @@ class RunScreen(Screen):
         # TODO: import image capture each x photos taken
 
         # schedule check
-        self.progress = Clock.schedule_interval(self.updateRun,1)
+        # self.progress = Clock.schedule_interval(self.updateRun,1)
 
         # create content and add to the popup
         content = GridLayout(cols=1)
