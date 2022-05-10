@@ -22,7 +22,7 @@ try:
     from copy_slave_pics import *
     from prise_image_bon import *
 except:
-    import raspberry.sshTools 
+    import raspberry.sshTools as sshTools
     from raspberry.stepper import *
     from raspberry.laser import *
     from raspberry.copy_slave_pics import *
@@ -31,7 +31,7 @@ except:
 # scan_name = sys.argv[1]
 # quality = sys.argv[2]
 
-def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = "test1"):
+def runScan(quality, laser_power = 50, color_space="Red", scale=50, scan_name = "test6"):
     """
     Run the scan : activate stepper and take pictures\n
     Params:\n
@@ -52,6 +52,19 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
     
     print(scan_name)
     print(quality)
+    
+    IO.cleanup()
+
+    IO.setwarnings(False)           # do not show any warnings
+    IO.setmode(IO.BCM)              # we are programming the GPIO by BCM pin numbers. (PIN33 as ‘GPIO13’)
+
+    pwm_laser = 13
+    enable = 24
+
+    IO.setup(pwm_laser, IO.OUT)     # initialize GPIO13 (PWM) as an output.
+    IO.setup(enable, IO.OUT)        # initialize GPIO24 as an output.
+
+    IO.output(enable, IO.HIGH)      # set enable to high to lock the motor in place
 
     # define GPIO pins for the motor
     GPIO.setmode(GPIO.BCM)
@@ -99,8 +112,8 @@ def runScan(quality, laser_power = 70, color_space="Red", scale=10, scan_name = 
 
             print("Slave captured image")
             
-        except os.system.error as e:
-            print(str(e))
+        except :
+            print("slave not taken")
         
         # Run the stepper
         time.sleep(5)

@@ -290,12 +290,13 @@ class RunScreen(Screen):
             # stopMotor()
             # TODO: save pictures in specific folder
             self.ids[str("runPopup")].dismiss()
-            self.progress.cancel()
+            #self.progress.cancel()
         elif name =="Cancel":
+            self.ids[str("runPopup")].dismiss()
             # TODO: delete pictures that were just taken
             #TODO: uncomment
             # stopMotor()
-            self.progress.cancel()
+            #self.progress.cancel()
         elif name =="Pause":
             # TODO: pause the running loop
             self.isPaused = True
