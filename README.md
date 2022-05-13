@@ -145,6 +145,6 @@ To get the pictures from the slave to the master, we used the NFS protocol to mo
 
 All of this would be alleviated if we used a single raspberry pi.
 
-A second suggested improvement, would be to use a single camera instead of 2. Indeed, the stereovision could still be achieved with a single camera and a laser (see this [project](http://www.inf.fu-berlin.de/lehre/SS06/Robotik/stereo_vision_newest.pdf) for example)
+A second suggested improvement, would be to use a single camera instead of 2. Indeed, the stereovision could still be achieved with a single camera and a laser (see this [project](https://hci.rwth-aachen.de/fabscanoriginal) for example)
 
 Finally, this project lacks in rigor, structure, consistency and easy extensibility. It would be advised to aim for a ["Glass-Box"](https://en.wikipedia.org/wiki/Extensibility#Glass-Box) extensibility model.
