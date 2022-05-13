@@ -70,14 +70,56 @@ Run the script [main.py](https://github.com/16205/Sid_project/blob/main/code/mai
 
 ### 3.2. On the Raspberry pi Master
 
-### 3.3. On the Raspberry pi Slave
+#### 3.2.1. Different Files
+In the [/code/raspberry/](https://github.com/16205/Sid_project/tree/main/code/raspberry) folder, you can find the following scripts :
+- ```GPIO_setup.py``` : used to set the correct pins in read/write at the start of the application;
+- ```copy_slave_pics.py``` : after a scan , the master will copy the pictures taken by the slave in its own folder;
+- ```laser.py``` : used to turn on/off and adjust the intensity of the laser;
+- ```prise_image_bon.py``` : takes a picture from the master and writes it into a folder with the name of the scan;
+- ```scan.py``` : main script that manages the scan (turns the laser, takes pictures, turn the stepper and copy the slave pics);
+- ```sshTools.py``` : used to run commands from the master to the slave via the SSH protocol;
+- ```stepper.py``` : used to command the stepper and turn a determinated number of steps;
+- ```stream.py``` : used to command the slave to stream its video feed through rtsp.
 
+#### 3.2.2. Stereovision Folder
+The stereovision folder contains the scripts to calibrate the cameras, but also to transform the pictures in a cloud of 3D points : 
+- ```calibration.py```: calibrates the cameras;
+- **TO ADD**
+- **TO ADD**
+- **TO ADD**
+- **TO ADD**
+
+#### 3.2.3. Post-processing Folder
+This folder contains the scritps to transform a cloud of points into a 3D STL file : 
+- ```create_stl.py``` : takes in input a json file in a 3 dimensions matrix and outputs a STL file;
+- ```create_points.py``` : creates json files to get examples of working models.
+
+### 3.3. On the Raspberry pi Slave
+- **TO ADD**
+- **TO ADD**
+- **TO ADD**
+- **TO ADD**
 ## 4. PCB design
+The [pcb](https://github.com/16205/Sid_project/tree/pcb) branch contains the Gerber files to print through JLCPCB.  
+You can find the scematics and the design in the [pdf](https://github.com/16205/Sid_project/tree/pcb/pdf) folder.
+
+The point of this PCB is to have one board, connecting all the needed cables as well as having easy access to the pins. It contains a footprint for :
+- A A4988 driver;
+- 2 USB-A 2.0 female ports;
+- 1 capacitor (12V)
+- 1 potentiometer
+- pins for the stepper, the alimentation (5 and 12V), the laser and the raspberry pi (master)
 
 ## 5. 3D CAD design
-
+- **TO ADD**
+- **TO ADD**
+- **TO ADD**
+- **TO ADD**
 ## 6. Assembly
-
+- **TO ADD**
+- **TO ADD**
+- **TO ADD**
+- **TO ADD**
 ## 7. Continue the project
 
 Please Fork the repository if you want to continue our project. If you just want to test it, just clone it.
@@ -92,4 +134,17 @@ The project needs you to have a python version of ```3.8.10``` or older, with th
 - ```kivy```
 - ```RpiMotorlib```
 
+### 7.2. Suggested improvements
 
+As said before, this project is still in a state of a prototype. There are still some bugs and unresolved issues due to the limited time we were confronted to. 
+
+Furthermore, due to the chip shortage between 2021 and 2022, we had no choice but use 2 raspberry pi, instead of a single one with an adapter to accept 2 cameras, or a compute module 4. This greatly increased the complexity of the project as the communication between the 2 Raspberry pi's were slow and unconsistant.  
+
+The actual communication between the Rapsberry pi's are through SSH to run scripts, and through RTSP to get video feed (we also tried with TCP and UDP but it's as unconsistant as RTSP).  
+To get the pictures from the slave to the master, we used the NFS protocol to mount the slave's ```/home``` folder into the master's ```/mnt``` folder.
+
+All of this would be alleviated if we used a single raspberry pi.
+
+A second suggested improvement, would be to use a single camera instead of 2. Indeed, the stereovision could still be achieved with a single camera and a laser (see this [project](http://www.inf.fu-berlin.de/lehre/SS06/Robotik/stereo_vision_newest.pdf) for example)
+
+Finally, this project lacks in rigor, structure, consistency and easy extensibility. It would be advised to aim for a ["Glass-Box"](https://en.wikipedia.org/wiki/Extensibility#Glass-Box) extensibility model.
