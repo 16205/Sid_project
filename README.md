@@ -39,7 +39,7 @@ This corresponds to the home page of the interface. The user is presented with 4
 - **Storage**, to access the ```StorageScreen```;
 - **Exit**, to exit the application.
 
-![alt text](https://github.com/16205/Sid_project/res/HomePage.png?raw=true)
+![alt text](https://github.com/16205/Sid_project/blob/main/res/HomePage.png?raw=true)
 ### 2.2. RunScreen
 This interface contains all the quick parameters to set before a scan and the button to start a scan :
 - **Resolution** is used to set the number of pictures taken;
@@ -47,7 +47,7 @@ This interface contains all the quick parameters to set before a scan and the bu
 - **Laser power** is used to adjust the intensity of the laser;
 - **The set of 3 radio buttons** helps visualize the pictures taken in different color spaces.
 
-![alt text](https://github.com/16205/Sid_project/res/Run.png?raw=true)
+![alt text](https://github.com/16205/Sid_project/blob/main/res/Run.png?raw=true)
 
 ### 2.3. Settings
 This interface is used to setup the calibration needed to scan (only the first time the application is launched) :
@@ -55,12 +55,12 @@ This interface is used to setup the calibration needed to scan (only the first t
 - **Slave(L)** and **Master(R)** are used to have a video feedback of the 2 cameras;
 - **Capture/Calibrate** launches the script of ```calibration```.
 
-![alt text](https://github.com/16205/Sid_project/res/Settings.png?raw=true)
+![alt text](https://github.com/16205/Sid_project/blob/main/res/Settings.png?raw=true)
 
 ### 2.4. Storage
 The storage interface helps the user to manage its scans, as well as convert it in a 3D STL file.
 
-![alt text](https://github.com/16205/Sid_project/res/Storage.png?raw=true)
+![alt text](https://github.com/16205/Sid_project/blob/main/res/Storage.png?raw=true)
 
 ## 3. Scripts
 
