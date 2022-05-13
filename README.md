@@ -1,7 +1,7 @@
 # **SID Project**
 
 #### A Robotic project - Stereo Imaging Device  
-
+![alt text](https://github.com/16205/Sid_project/blob/main/res/sid_front.jpg)
 
 ## Project participants  
 
