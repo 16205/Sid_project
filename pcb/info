@@ -4,12 +4,12 @@
   "name": "PCB_sid_pm",
   "content": "",
   "created_at": "2022-02-09 14:07:08",
-  "updated_at": "2022-02-11 09:44:02",
+  "updated_at": "2022-03-14 12:18:09",
   "stick": "",
   "documents": [
     {
-      "uuid": "1e74d8fbd2e41c3032275052cb318892",
-      "title": "Sheet_1",
+      "uuid": "5d45fa4186272c37f11d2de9dc84a734",
+      "title": "Sheet_2",
       "description": "",
       "docType": "1",
       "master": "",
@@ -17,10 +17,11 @@
       "components": {
         "f29621326ae148e3809e5921ba1d3d3c": 2,
         "798d0935b37a4951a84e1145693344c9": 1,
-        "3ec77201bbcd4ecd8722658d581a4e60": 3,
-        "2f5c8276f8d64010877a8d3bb97697b8": 1,
-        "eaa76950fd7343a1953943ee7b9978d3": 1,
-        "df3fc4bce12f4ccd8af4db52d8a6f3f3": 1
+        "df3fc4bce12f4ccd8af4db52d8a6f3f3": 1,
+        "7809ed3ba7c24a14936ce2a66b37ccdb": 1,
+        "fec19d51729243409efc85ab3f6e7d49": 1,
+        "0936cc5c291d4fb1a6138633f636bee4": 3,
+        "26de9706e0ae4494a734d659d3fa197f": 1
       },
       "BOM": [
         [
@@ -31,10 +32,24 @@
           "CustomPara"
         ],
         [
+          "X2510WV-02SP-N0SN",
+          3,
+          "CONN-TH_2P-P2.54_XKB_X2510WV-02SP-N0SN",
+          "5V,12V,LA",
+          {
+            "BOM_Supplier": "LCSC",
+            "BOM_Supplier Part": "C917516",
+            "BOM_Manufacturer": "XKB Connectivity(中国星坤)",
+            "BOM_Manufacturer Part": "X2510WV-02SP-N0SN",
+            "puuid": "5a0ae0445954416183c1c12ef1f8ceb0",
+            "uuid": "0936cc5c291d4fb1a6138633f636bee4"
+          }
+        ],
+        [
           "100uF",
           1,
           "CAP-TH_BD8.0-P3.50-D0.6-FD",
-          "C1",
+          "CAP",
           {
             "BOM_Supplier": "LCSC",
             "BOM_Supplier Part": "C713160",
@@ -46,52 +61,10 @@
           }
         ],
         [
-          "HDR-F-2.54_1x6",
-          1,
-          "HDR-F-2.54_1X6",
-          "H_RASP",
-          {
-            "BOM_Supplier Part": "C40877",
-            "BOM_Supplier": "LCSC",
-            "BOM_Manufacturer": "",
-            "BOM_Manufacturer Part": "",
-            "puuid": "e86d43893d914130bd34765c00ed5f63",
-            "uuid": "2f5c8276f8d64010877a8d3bb97697b8"
-          }
-        ],
-        [
-          "HDR-F-2.54_1x2",
-          3,
-          "HDR-F-2.54_1X2",
-          "IN_5V,IN_12V,OUT_LA",
-          {
-            "BOM_Supplier Part": "C49661",
-            "BOM_Supplier": "LCSC",
-            "BOM_Manufacturer": "",
-            "BOM_Manufacturer Part": "",
-            "puuid": "36b1306a115341f4b4d9407fb34974e0",
-            "uuid": "3ec77201bbcd4ecd8722658d581a4e60"
-          }
-        ],
-        [
-          "HDR-F-2.54_1x4",
-          1,
-          "HDR-F-2.54_1X4",
-          "OUT_STEPPER",
-          {
-            "BOM_Supplier Part": "C225501",
-            "BOM_Supplier": "LCSC",
-            "BOM_Manufacturer": "",
-            "BOM_Manufacturer Part": "",
-            "puuid": "21473b495b6340c992965357d5701779",
-            "uuid": "eaa76950fd7343a1953943ee7b9978d3"
-          }
-        ],
-        [
           "HW-134_Stepper_Driver",
           1,
           "HW-134_STEPPER_DRIVER",
-          "U6",
+          "DRIVER",
           {
             "BOM_Manufacturer": "",
             "BOM_Manufacturer Part": "",
@@ -102,10 +75,54 @@
           }
         ],
         [
+          "Amphenol",
+          1,
+          "RES-ADJ-TH_PT10LV10",
+          "R1",
+          {
+            "BOM_Supplier": "LCSC",
+            "BOM_Supplier Part": "C390097",
+            "BOM_Manufacturer": "Amphenol Piher",
+            "BOM_Manufacturer Part": "PT10LV10-103A2020",
+            "BOM_JLCPCB Part Class": "Extended Part",
+            "puuid": "19f8ea5b8b414e1a92592c0e576b4ef0",
+            "uuid": "fec19d51729243409efc85ab3f6e7d49"
+          }
+        ],
+        [
+          "HDR-F-2.54_1x8",
+          1,
+          "HDR-F-2.54_1X8",
+          "RASP",
+          {
+            "BOM_Supplier Part": "C225505",
+            "BOM_Supplier": "LCSC",
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "puuid": "76a028e0363649388f2a2e340a157455",
+            "uuid": "7809ed3ba7c24a14936ce2a66b37ccdb"
+          }
+        ],
+        [
+          "640456-4",
+          1,
+          "CONN-TH_640456-4",
+          "STEPPER",
+          {
+            "BOM_Supplier": "LCSC",
+            "BOM_Manufacturer": "TE Connectivity",
+            "BOM_Manufacturer Part": "640456-4",
+            "BOM_Supplier Part": "C86504",
+            "BOM_JLCPCB Part Class": "Extended Part",
+            "puuid": "6e2ab543011a44faa4fd3fe735ea62bb",
+            "uuid": "26de9706e0ae4494a734d659d3fa197f"
+          }
+        ],
+        [
           "USB-TYPE A_Female",
           2,
           "USB-A-SMD_USB-M-32-F",
-          "USB1,USB2",
+          "USB_1,USB_2",
           {
             "BOM_Supplier Part": "C42605",
             "BOM_Supplier": "LCSC",
@@ -116,11 +133,11 @@
           }
         ]
       ],
-      "updateTime": 1644505210,
-      "createTime": 1644412029,
+      "updateTime": 1647255929,
+      "createTime": 1646404168,
       "histories": [],
-      "created_at": "2022-02-09 14:07:09",
-      "updated_at": "2022-02-10 16:00:10"
+      "created_at": "2022-03-04 15:29:28",
+      "updated_at": "2022-03-14 12:05:29"
     },
     {
       "uuid": "7c50d83783d23085aaaceaa98bd490bf",
@@ -145,11 +162,39 @@
       "histories": [],
       "created_at": "2022-02-10 16:05:29",
       "updated_at": "2022-02-11 09:44:02"
+    },
+    {
+      "uuid": "082a901e29eae60c92ae23552a615ff2",
+      "puuid": "058de4f6ceac84672119c7b951d46a8d",
+      "title": "PCB_PCB_sid_pm_3",
+      "filename": "PCB_PCB_sid_pm_3.json",
+      "description": "2.0\n",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "5a0ae0445954416183c1c12ef1f8ceb0": 3,
+        "b7ca72bab77147939968f9d13153bb2b": 1,
+        "6c37866fcd57439293bf5611bdf0b96d": 2,
+        "76a028e0363649388f2a2e340a157455": 1,
+        "6e2ab543011a44faa4fd3fe735ea62bb": 1,
+        "19f8ea5b8b414e1a92592c0e576b4ef0": 1,
+        "90d1b58a2d284d63b5d026a0c4e38bab": 1
+      },
+      "BOM": [],
+      "updateTime": 1647256689,
+      "createTime": 1646406752,
+      "histories": [],
+      "created_at": "2022-03-04 16:12:32",
+      "updated_at": "2022-03-14 12:18:09"
     }
   ],
-  "sort": [],
+  "sort": [
+    "1e74d8fbd2e41c3032275052cb318892",
+    "5d45fa4186272c37f11d2de9dc84a734"
+  ],
   "title": "PCB_sid_pm",
   "foldername": "PCB_sid_pm",
   "schfilename": "PCB_sid_pm.json",
-  "schfilemtime": 1644505212000
+  "schfilemtime": 1647255930000
 }
