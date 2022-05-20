@@ -124,17 +124,3 @@ The project needs you to have a python version of ```3.8.10``` or older, with th
 - ```kivy```
 - ```RpiMotorlib```
 
-### 5.2. Suggested improvements
-
-As said before, this project is still in a state of a prototype. There are still some bugs and unresolved issues due to the limited time we were confronted to. 
-
-Furthermore, due to the chip shortage between 2021 and 2022, we had no choice but use 2 raspberry pi, instead of a single one with an adapter to accept 2 cameras, or a compute module 4. This greatly increased the complexity of the project as the communication between the 2 Raspberry pi's were slow and unconsistant.  
-
-The actual communication between the Rapsberry pi's are through SSH to run scripts, and through RTSP to get video feed (we also tried with TCP and UDP but it's as unconsistant as RTSP).  
-To get the pictures from the slave to the master, we used the NFS protocol to mount the slave's ```/home``` folder into the master's ```/mnt``` folder.
-
-All of this would be alleviated if we used a single raspberry pi.
-
-A second suggested improvement, would be to use a single camera instead of 2. Indeed, the stereovision could still be achieved with a single camera and a laser (see this [project](https://hci.rwth-aachen.de/fabscanoriginal) for example)
-
-Finally, this project lacks in rigor, structure, consistency and easy extensibility. It would be advised to aim for a ["Glass-Box"](https://en.wikipedia.org/wiki/Extensibility#Glass-Box) extensibility model.
