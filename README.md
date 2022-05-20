@@ -84,10 +84,12 @@ In the [/code/raspberry/](https://github.com/16205/Sid_project/tree/main/code/ra
 #### 3.2.2. Stereovision Folder
 The stereovision folder contains the scripts to calibrate the cameras, but also to transform the pictures in a cloud of 3D points : 
 - ```calibration.py```: calibrates the cameras;
-- **TO ADD**
-- **TO ADD**
-- **TO ADD**
-- **TO ADD**
+- ```prepross.py```: generate a new binarized image with in white the laser and the rest in black
+- ```image_processing.py```: contain the stereovision methods 
+- ```scan_processing.py```: run the stereovision methods on a scan and then generate a JSON file with the world coordinates in the opencv calibration referential.
+- ```post_processing.py```: achieve the revolution of all the laser lines and save the point cloud to a json.
+- ```jsonTools.py```: Library to create json files and get data from json files
+- ```mathTools.ty```: Library with mathematical functions for the image processing
 
 #### 3.2.3. Post-processing Folder
 This folder contains the scritps to transform a cloud of points into a 3D STL file : 
@@ -95,10 +97,8 @@ This folder contains the scritps to transform a cloud of points into a 3D STL fi
 - ```create_points.py``` : creates json files to get examples of working models.
 
 ### 3.3. On the Raspberry pi Slave
-- **TO ADD**
-- **TO ADD**
-- **TO ADD**
-- **TO ADD**
+- ```prise_image_bon.py```: take picture and save it into the asked folder. Runned from the master in ssh.
+
 ## 4. PCB design
 The [pcb](https://github.com/16205/Sid_project/tree/pcb) branch contains the Gerber files to print through JLCPCB.  
 You can find the scematics and the design in the [pdf](https://github.com/16205/Sid_project/tree/pcb/pdf) folder.
@@ -110,21 +110,11 @@ The point of this PCB is to have one board, connecting all the needed cables as 
 - 1 potentiometer
 - pins for the stepper, the alimentation (5 and 12V), the laser and the raspberry pi (master)
 
-## 5. 3D CAD design
-- **TO ADD**
-- **TO ADD**
-- **TO ADD**
-- **TO ADD**
-## 6. Assembly
-- **TO ADD**
-- **TO ADD**
-- **TO ADD**
-- **TO ADD**
-## 7. Continue the project
+## 5. Continue the project
 
 Please Fork the repository if you want to continue our project. If you just want to test it, just clone it.
 
-### 7.1. Dependencies
+### 5.1. Dependencies
 
 The project needs you to have a python version of ```3.8.10``` or older, with the following pip modules installed : 
 - ```numpy```
@@ -134,7 +124,7 @@ The project needs you to have a python version of ```3.8.10``` or older, with th
 - ```kivy```
 - ```RpiMotorlib```
 
-### 7.2. Suggested improvements
+### 5.2. Suggested improvements
 
 As said before, this project is still in a state of a prototype. There are still some bugs and unresolved issues due to the limited time we were confronted to. 
 
