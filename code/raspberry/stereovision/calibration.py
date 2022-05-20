@@ -3,6 +3,7 @@ import numpy as np
 import os
 import time
 import sys
+import jsonTools as js
 # from picamera.array import PiRGBArray
 # from picamera import PiCamera
 
@@ -60,6 +61,39 @@ def calibration(nx = 10, ny = 8):
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
     return mtx, dist, rvecs, tvecs
+
+#on fait le calcule de la matrice fondamentale
+def crochets(v):
+    v = v[:,0]
+    return np.array([ [ 0,-v[2],v[1] ],[ v[2],0,-v[0] ],[ -v[1],v[0],0 ] ])
+
+def matFondamental(camLeft,centerRight,camRight):
+    
+    return np.array(crochets(camLeft @ centerRight) @ camLeft @ np.linalg.pinv(camRight))
+
+
+def computeMatFund(mtx, dist, rvecs, tvecs):
+    #on transforme le rvecs en matrice 3x3
+    #rotation matrix => convert vector to matrix
+    rmatRight = cv2.Rodrigues(rvecs[1])[0] #on prend le 2 car c'est le rvec de la camera de droite pour l'image 2
+    rmatLeft = cv2.Rodrigues(rvecs[0])[0] #on prend le rvec 1 car c'est le rvec de la camera de gauche pour l'image 2
+    #full [R|t] matrix => add t in R 
+    #on construit la matrice de rotation dans le labo 1 qui couplée à la matrice de prijection permet de faire le lien 
+    #entre coordinées monde et coordonnées image
+    rotMatRight = np.concatenate((rmatRight,tvecs[0]), axis=1)
+    rotMatLeft = np.concatenate((rmatLeft,tvecs[0]), axis=1)
+    print(rotMatLeft)
+    #on construit les matrices de projection des cameras en faisant le produit des matrices de m avec celles de rotation et 
+    #de transposition
+    camLeft = mtx @ rotMatLeft
+    camRight = mtx @ rotMatRight
+    # find cx and cy for both cameras
+    camWorldCenterLeft = np.linalg.inv(np.concatenate((rotMatLeft,[[0,0,0,1]]), axis=0)) @ np.transpose([[0,0,0,1]])
+    camWorldCenterRight = np.linalg.inv(np.concatenate((rotMatRight,[[0,0,0,1]]), axis=0)) @ np.transpose([[0,0,0,1]])
+    F = matFondamental(camRight,camWorldCenterLeft,camLeft) 
+    calibration_dict = {"F": F.tolist() , "camLeft" : camLeft.tolist(), "camRight" : camRight.tolist(), "camWorldCenterLeft" : camWorldCenterLeft.tolist(), "camWorldCenterRight" : camWorldCenterRight.tolist()}
+    js.buildJson("calibration", "calibration_params", calibration_dict)
+    return F, camLeft, camRight, camWorldCenterLeft, camWorldCenterRight
     
 def captureCalibPics():
     
