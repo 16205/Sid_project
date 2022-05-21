@@ -186,3 +186,19 @@ def run(folderName):
     vertices, faces = create_stl(points, columns, rows)
     create_mesh(vertices, faces, folderName)
     
+with open(f'code/raspberry/post_processing/NAAAGE.json') as json_file:
+        data = json.load(json_file)
+
+# format it in a 3D array
+clean_data = []
+for i in range(len(data)-1):
+    col = data[f'{i}']
+    clean_data.append(col)
+
+# with open(f'code/raspberry/post_processing/new_cylinder.json') as json_file:
+#         clean_data = json.load(json_file)
+
+
+points, columns, rows = add_missing_points(clean_data)
+vertices, faces = create_stl(points, columns, rows)
+create_mesh(vertices, faces, "scan_1")
